@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Phaser - Making your first game, part 1</title>
     <script type="text/javascript" src="phaser.min.js"></script>
+    <script type="text/javascript" src="socket.io.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -17,7 +18,11 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var starArray = new Array();
 var stars;
-var localX, localY;
+
+var state = {
+    x: 0,
+    y: 0
+};
 
 //Preloads(Sprites)
 function preload() {
@@ -26,18 +31,17 @@ function preload() {
 }
 //Creating
 function create() {
-    localX = Math.floor((Math.random() * 800) + 1);
-    localY = Math.floor((Math.random() * 600) + 1);
+    state.x = Math.floor((Math.random() * 800) + 1);
+    state.y = Math.floor((Math.random() * 600) + 1);
 
-    console.log("Cords:"+ localX + ","+ localY);
+    console.log("Cords:"+ state.x + ","+ state.y);
 
-    game.add.sprite(localX,localY, 'star');
+    game.add.sprite(state.x, state.y, 'star');
     stars = game.add.group();
+    makeStar(0,0);
 }
 
 function update() {
-    makeStar(0,0);
-    makeStar(0,0);
 }
 
 function killAllS()
@@ -58,6 +62,14 @@ function makeStar(xCord, yCord)
 {
     stars.create(xCord,yCord, 'star');
 }
+
+/* Socket IO stuff */
+
+var socket = io();
+setInterval(function() {
+    console.log('Sending state');
+    socket.emit('state', state);
+}, 1000);
 
 </script>
 <body>
