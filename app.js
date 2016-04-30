@@ -29,10 +29,10 @@ app.get('/static/*', function(req, res, next) {
 io.on('connection', function(socket) {
     socket.userid = UUID();
     socket.emit( 'onconnected', { id: socket.userid } );
-    console.log('player number ' + socket.userid + 'connected');
+    console.log('player number ' + socket.userid + ' connected');
 
     socket.on('disconnect', function() {
-        console.log('player number ' + socket.userid + 'disconnected');
+        console.log('player number ' + socket.userid + ' disconnected');
     });
 
 });
