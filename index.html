@@ -3,8 +3,7 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Phaser - Making your first game, part 1</title>
-    <script type="text/javascript" src="/static/phaser.min.js"></script>
-    <script type="text/javascript" src="/static/socket.io.js"></script>
+    <script type="text/javascript" src="static/phaser.min.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -14,7 +13,6 @@
 <body>
 
 <script type="text/javascript">
-
 //Variable declarations
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var starArray = new Array();
@@ -23,15 +21,16 @@ var velocity = 150;
 var state = 
 {
     x:0,
-    y:0
+    y:0,
+    rotation:0
 }
 var player;
 var cursors;
 
 //Preloads(Sprites)
 function preload() {
-    game.load.image('pl1', '/static/assets/hitman1_gun.png');
-    game.load.image('star', '/static/assets/star.png');
+    game.load.image('pl1', 'static/assets/hitman1_gun.png');
+    game.load.image('star', 'static/assets/star.png');
     // game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 }
 //Creating
@@ -40,6 +39,7 @@ function create() {
     player = game.add.sprite(state.x, state.y, 'pl1');
     game.physics.arcade.enable(player);
     cursors = game.input.keyboard.createCursorKeys();
+    player.anchor.setTo(0.5,0.5);
 
     //creating groups
     stars = game.add.group(); 
@@ -51,14 +51,17 @@ function create() {
     this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
 
     //creating objects
-    //makeStar(0,0);
+    makeStar(0,0);
 }
 
 function update() {
     //makeStar(0,0);
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
+    state.x = player.x;
+    state.y = player.y;
 
+    rotatePlayer();
     if (this.leftKey.isDown || cursors.left.isDown)
     {
         //  Move to the left
@@ -81,16 +84,6 @@ function update() {
     {
         player.body.velocity.y = velocity;
     }
-    else
-    {
-        //  Stand still
-        player.animations.stop();
-
-        player.frame = 4;
-    }
-
-    state.x = player.x;
-    state.y = player.y;
  
 }
 
@@ -113,13 +106,17 @@ function makeStar(xCord, yCord)
     stars.create(state.x,state.y, 'star');
 }
 
-/* Socket IO stuff */
+function rotatePlayer()
+{
+        var x2 , x1, y2, y1;
+        x2 = game.input.x;
+        x1 = state.x;
+        y2 = game.input.y;
+        y1 = state.y;
 
-var socket = io();
-setInterval(function() {
-    socket.emit('state', state);
-}, 100);
-
+        player.rotation = Math.atan2((y2-y1),(x2-x1));
+        state.rotation = player.rotation;
+}
 </script>
 </body>
 </html>
