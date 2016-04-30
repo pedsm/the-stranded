@@ -26,8 +26,10 @@ app.get('/static/*', function(req, res, next) {
     res.sendfile(__dirname + '/static/' + file);
 });
 
+var ids_given = 0;
+
 io.on('connection', function(socket) {
-    socket.userid = UUID();
+    socket.userid = ids_given++;
     socket.emit( 'onconnected', { id: socket.userid } );
     console.log('player number ' + socket.userid + ' connected');
 
@@ -39,6 +41,8 @@ io.on('connection', function(socket) {
         console.log('User ' + socket.userid + ' reporting location ('
             + data.x + ', ' + data.y + ')');
     });
+
+    
 
 });
     
