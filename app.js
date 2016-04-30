@@ -46,6 +46,7 @@ sio.sockets.on('connection', function(client) {
 
     client.on('disconnect', function() {
         console.log('\t socket.io:: player ' + client.userid + ' disconnected');
+    });
 
 });
 
