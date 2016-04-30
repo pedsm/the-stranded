@@ -35,8 +35,9 @@ io.on('connection', function(socket) {
         console.log('player number ' + socket.userid + ' disconnected');
     });
 
-    socket.on('rand_num', function(data) {
-        console.log('User ' + socket.userid + ' sent number: ' + data.number);
+    socket.on('state', function(data) {
+        console.log('User ' + socket.userid + ' reporting location ('
+            + data.x + ', ' + data.y + ')');
     });
 
 });

@@ -1,9 +1,125 @@
-<html>
-    <head>
-        <title>The Standed</title>
-        <script src="main.js"/>
-    </head>
-    <body>
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Phaser - Making your first game, part 1</title>
+    <script type="text/javascript" src="/static/phaser.min.js"></script>
+    <script type="text/javascript" src="/static/socket.io.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
 
-    </body>
+<script type="text/javascript">
+
+//Variable declarations
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var starArray = new Array();
+var stars;
+var velocity = 150;
+var state = 
+{
+    x:0,
+    y:0
+}
+var player;
+var cursors;
+
+//Preloads(Sprites)
+function preload() {
+    game.load.image('pl1', '/static/assets/hitman1_gun.png');
+    game.load.image('star', '/static/assets/star.png');
+    // game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+}
+//Creating
+function create() {
+    //creating player
+    player = game.add.sprite(state.x, state.y, 'pl1');
+    game.physics.arcade.enable(player);
+    cursors = game.input.keyboard.createCursorKeys();
+
+    //creating groups
+    stars = game.add.group(); 
+
+    //adding WASD support
+    this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+    this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+    this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+
+    //creating objects
+    //makeStar(0,0);
+}
+
+function update() {
+    //makeStar(0,0);
+    player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
+
+    if (this.leftKey.isDown || cursors.left.isDown)
+    {
+        //  Move to the left
+        player.body.velocity.x = -velocity;
+
+        player.animations.play('left');
+    }
+    if (this.rightKey.isDown|| cursors.right.isDown)
+    {
+        //  Move to the right
+        player.body.velocity.x = velocity;
+
+        player.animations.play('right');
+    }
+    if (this.upKey.isDown || cursors.up.isDown)
+    {
+        player.body.velocity.y = -velocity;
+    }
+    if (this.downKey.isDown || cursors.down.isDown)
+    {
+        player.body.velocity.y = velocity;
+    }
+    else
+    {
+        //  Stand still
+        player.animations.stop();
+
+        player.frame = 4;
+    }
+
+    state.x = player.x;
+    state.y = player.y;
+ 
+}
+
+function killAllS()
+{
+    //console.log(stars.length);
+    for (i = 0; i < stars.length; i++) {
+        var tempStar = stars.getFirstAlive();
+
+        if(tempStar)
+        {
+            tempStar.kill();
+        }
+    }
+    
+}
+
+function makeStar(xCord, yCord)
+{
+    stars.create(state.x,state.y, 'star');
+}
+
+/* Socket IO stuff */
+
+var socket = io();
+setInterval(function() {
+    socket.emit('state', state);
+}, 100);
+
+</script>
+</body>
 </html>
