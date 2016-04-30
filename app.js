@@ -4,7 +4,8 @@ var gameport = process.env.PORT || 4004,
     server = require('http').Server(app),
     io      = require('socket.io')(server),
     UUID    = require('node-uuid'),
-    verbose = false;
+    verbose = false,
+    updates_per_second = 10;
 
 
 // Setup express
@@ -42,7 +43,19 @@ io.on('connection', function(socket) {
             + data.x + ', ' + data.y + ')');
     });
 
-    
 
 });
+
+function collect_gamestates() {
+    var states = [];
+    var clients = io.sockets.clients();
+    for (var i = 0; i < clients.length; i++) {
+        states.push(clients[i]);
+    }
+    return states;
+}
     
+setInterval(function(){
+    io.sockets.emit(collect_gamestates(), 'everyone');
+}, 1000 / updates_per_second);
+
