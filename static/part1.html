@@ -16,13 +16,11 @@
 var score = 0;
 var scoreText;
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
-
 function preload() {
     game.load.image('sky', 'assets/sky.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-
 }
 function createWorld()
 {
@@ -42,9 +40,7 @@ function createWorld()
     ledge.body.immovable = true;
     game.add.sprite(0, 0, 'star');
     stars = game.add.group();
-
     stars.enableBody = true;
-
     //  Here we'll create 12 of them evenly spaced apart
     for (var i = 0; i < 12; i++)
     {
@@ -66,39 +62,32 @@ function create() {
     player.animations.add('left',[0,1,2,3],10, true);
     player.animations.add('right',[5,6,7,8],10, true);
     cursors = game.input.keyboard.createCursorKeys();
-
     scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 }
-
 function update() {
     game.physics.arcade.collide(player,plataforms);
     game.physics.arcade.collide(stars, plataforms);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
-
     if (cursors.left.isDown)
     {
         //  Move to the left
         player.body.velocity.x = -150;
-
         player.animations.play('left');
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
         player.body.velocity.x = 150;
-
         player.animations.play('right');
     }
     else
     {
         //  Stand still
         player.animations.stop();
-
         player.frame = 4;
     }
-
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down)
     {
@@ -110,7 +99,6 @@ function collectStar (player, star) {
     score += 10;
     scoreText.text = 'Score: ' + score;
 }
-
 </script>
 <body>
 </html>
