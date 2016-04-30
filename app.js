@@ -17,12 +17,12 @@ app.get('/', function(req, res) {
 });
 
 // Serve static files
-app.get('/*', function(req, res, next) {
+app.get('/static/*', function(req, res, next) {
     var file = req.params[0];
 
     if(verbose) console.log('\t :: Express :: file requested : ' + file);
 
-    res.sendfile(__dirname + '/' + file);
+    res.sendfile(__dirname + '/static/' + file);
 });
 
 
