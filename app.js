@@ -39,23 +39,25 @@ io.on('connection', function(socket) {
     });
 
     socket.on('state', function(data) {
-        console.log('User ' + socket.userid + ' reporting location ('
-            + data.x + ', ' + data.y + ')');
+        socket.x = data.x;
+        socket.y = data.y;
+        socket.rotation = data.rotation;
     });
 
 
 });
 
 function collect_gamestates() {
-    var states = [];
-    var clients = io.sockets.clients();
-    for (var i = 0; i < clients.length; i++) {
-        states.push(clients[i]);
-    }
+    states = [];
+    Object.keys(io.sockets.sockets).forEach(function(id) {
+        var socket = io.sockets.connected[id];
+        states.push({x: socket.x, y: socket.y, rotation: socket.rotation});
+    })
     return states;
+
 }
     
 setInterval(function(){
-    io.sockets.emit(collect_gamestates(), 'everyone');
-}, 1000 / updates_per_second);
+    io.sockets.emit('gamestate', collect_gamestates());
+}, 100);
 
