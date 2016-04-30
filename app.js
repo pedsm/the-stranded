@@ -1,13 +1,15 @@
 // quick setup server.
 var gameport = process.env.PORT || 4004,
-    express = require('express'),
+    app = require('express')(),
+    server = require('http').Server(app),
+    io      = require('socket.io')(server),
     UUID    = require('node-uuid'),
-    verbose = false,
-    app = express();
+    verbose = false;
 
 
 // Setup express
-app.listen(gameport);
+server.listen(gameport);
+
 console.log('Listening on port ' + gameport);
 
 app.get('/', function(req, res) {
@@ -24,3 +26,14 @@ app.get('/static/*', function(req, res, next) {
     res.sendfile(__dirname + '/static/' + file);
 });
 
+io.on('connection', function(socket) {
+    socket.userid = UUID();
+    socket.emit( 'onconnected', { id: socket.userid } );
+    console.log('player number ' + socket.userid + 'connected');
+
+    socket.on('disconnect', function() {
+        console.log('player number ' + socket.userid + 'disconnected');
+    });
+
+});
+    
