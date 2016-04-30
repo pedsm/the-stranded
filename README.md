@@ -1,2 +1,0 @@
-# the-stranded
-Mlg
