@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Phaser - Making your first game, part 1</title>
     <script type="text/javascript" src="phaser.min.js"></script>
+    <script type="text/javascript" src="socket.io.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -14,10 +15,11 @@
 
 <script type="text/javascript">
 //Variable declarations
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var starArray = new Array();
 var stars;
 var velocity = 150;
+var gamestate = [];
 var state = 
 {
     x:0,
@@ -31,10 +33,13 @@ var cursors;
 function preload() {
     game.load.image('pl1', 'assets/hitman1_gun.png');
     game.load.image('star', 'assets/star.png');
+    game.load.image('floor', 'assets/floor.jpg');
     // game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 }
 //Creating
 function create() {
+    //CREATING FLOOR
+    game.add.sprite(0,0,'floor');
     //creating player
     player = game.add.sprite(state.x, state.y, 'pl1');
     game.physics.arcade.enable(player);
@@ -50,8 +55,16 @@ function create() {
     this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
     this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
 
+    //Camera follow
+    game.camera.follow(player);
+    game.world.setBounds(0, 0, 1920, 1920);
+
     //creating objects
+    makeStar(500,500);
     makeStar(0,0);
+    makeStar(1920,1920);
+    makeStar(1920,0);
+    makeStar(0,1920);
 }
 
 function update() {
@@ -103,19 +116,36 @@ function killAllS()
 
 function makeStar(xCord, yCord)
 {
-    stars.create(state.x,state.y, 'star');
+    stars.create(xCord,yCord, 'star');
 }
 
 function rotatePlayer()
 {
         var x2 , x1, y2, y1;
-        x2 = game.input.x;
+        x2 = game.input.worldX;
         x1 = state.x;
-        y2 = game.input.y;
+        y2 = game.input.worldY;
         y1 = state.y;
 
         player.rotation = Math.atan2((y2-y1),(x2-x1));
-        state.rotation = player.rotation;
+        //state.rotation = player.rotation;
+}
+function render() {
+        //camera follow function debugging info
+        //game.debug.cameraInfo(game.camera, 32, 32);
+        //game.debug.spriteCoords(player, 32, 500);
+
+// Socket.io stuff
+var socket = io();
+
+socket.on('gamestate', function(data) {
+    gamestate=data;
+    console.log(gamestate.length);
+});
+
+setInterval(function() {
+    socket.emit('state', state);
+}, 100);
 }
 </script>
 </body>
