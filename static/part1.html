@@ -59,6 +59,7 @@ var cursors;
 function create() {
     createWorld();
     player = game.add.sprite(32, game.world.height - 150, 'dude');
+    player = game.physics.arcade.enable(player);
     game.physics.arcade.enable(player);
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 300;
