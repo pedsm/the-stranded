@@ -92,7 +92,7 @@ class Zombie {
         this.rotation = 0;
 
         // Costume id for a zombie
-        this.skin = 5;
+        this.skin = 11;
     }
 
     nearest_user() {
