@@ -55,6 +55,14 @@ io.on('connection', function(socket) {
         socket.skin = data.skin;
     });
 
+    socket.on('kill', function(data) {
+        for (var i=0; i<zombies.length; i++) {
+            if (zombies[i].id == data) {
+                zombies.splice(i, 1);
+            }
+        }
+    });
+
 
 });
 
