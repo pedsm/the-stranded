@@ -21,6 +21,16 @@ app.get('/', function(req, res) {
 });
 
 
+function collect_userstates() {
+    var states = [];
+    Object.keys(io.sockets.sockets).forEach(function(id) {
+        var socket = io.sockets.connected[id];
+        states.push({x: socket.x, y: socket.y, rotation: socket.rotation, id: socket.userid, skin:socket.skin});
+    })
+    return states;
+
+}
+
 // Serve static files
 app.get('/static/*', function(req, res, next) {
     var file = req.params[0];
@@ -39,6 +49,10 @@ io.on('connection', function(socket) {
     console.log('player number ' + socket.userid + ' connected');
 
     socket.on('disconnect', function() {
+        var num_users = collect_userstates().length;
+        if (!num_users) {
+            zombies.splice(0, num_users);
+        }
         io.sockets.emit('user-dc', {id: socket.userid});
         console.log('player number ' + socket.userid + ' disconnected');
         if (collect_userstates().length == 0) {
@@ -66,15 +80,6 @@ io.on('connection', function(socket) {
 
 });
 
-function collect_userstates() {
-    var states = [];
-    Object.keys(io.sockets.sockets).forEach(function(id) {
-        var socket = io.sockets.connected[id];
-        states.push({x: socket.x, y: socket.y, rotation: socket.rotation, id: socket.userid, skin:socket.skin});
-    })
-    return states;
-
-}
 
 function collect_zombiestates() {
     for (var z = 0; z < zombies.length; z++) {
