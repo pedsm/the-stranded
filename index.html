@@ -39,7 +39,7 @@ function preload() {
     game.load.spritesheet('pl1', '/static/assets/vector_characters.png',100,101,60);
     game.load.image('star', '/static/assets/star.png');
     game.load.image('floor', '/static/assets/grassBG.jpg');
-    game.load.image('desset', '/static/assets/PNG/tile_06.png');
+    game.load.image('dessert', '/static/assets/PNG/tile_06.png');
     game.load.image('grass', '/static/assets/PNG/tile_03.png');
     game.load.image('bullet', '/static/assets/bullet.png');
 }
@@ -48,12 +48,12 @@ function create() {
     //CREATING FLOOR
     //game.add.sprite(0,0,'floor');
     var j = 0;
-    while(j < 30)
+    while(j < 80)
     {
         var k = 0;
-        while(k < 30)
+        while(k < 80)
         {
-            game.add.sprite(30*k,30*j,'grass');
+            game.add.sprite(30*k,30*j,matrixFloor(k,j));
             k++;
         }
         j++;
@@ -88,11 +88,6 @@ function create() {
     game.world.setBounds(0, 0, 1920, 1920);
 
     //creating objects
-    makeStar(500,500);
-    makeStar(0,0);
-    makeStar(1920,1920);
-    makeStar(1920,0);
-    makeStar(0,1920);
 }
 
 function update() {
@@ -139,10 +134,18 @@ function update() {
 }
 function matrixFloor(x,y)
 {
-    floor = [1,1,1,1,1,1,1,1,1,
-             1,1,1,1,2,2,2,2,1,
-             1,1,1,2,2,2,1,1,1,
+    floor = [2,2,1,1,1,1,1,1,1,
+             1,2,1,1,2,2,2,2,1,
+             1,1,2,2,2,2,1,1,1,
              1,2,2,2,2,2,1,1,1];
+    if (floor[(9*y+x)%floor.length] == 1)
+    {
+        return 'grass';
+    }
+    else
+    {
+        return 'dessert';
+    }
 }
 function generate(localID)
 {
@@ -213,7 +216,13 @@ function createOPlayer(x,y,rot,id,skin)
     temp.rotation = rot;
     temp.name = id;
     temp.anchor.setTo(0.5,0.5);
+    if(skin == 11)
+    {
+        temp.frame = 25;
+    }else
+    {
     temp.frame = (skin*6)-1;
+    }   
     return temp;
 }
 //create a new Oplayer by id on gamestate
