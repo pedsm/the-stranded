@@ -42,6 +42,7 @@ io.on('connection', function(socket) {
         socket.x = data.x;
         socket.y = data.y;
         socket.rotation = data.rotation;
+        console.log(socket.rotation);
     });
 
 

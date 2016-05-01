@@ -86,6 +86,7 @@ function update() {
     player.body.velocity.y = 0;
     state.x = player.x;
     state.y = player.y;
+    state.rotation = player.rotation;
 
     rotatePlayer();
     if (this.leftKey.isDown || cursors.left.isDown)
@@ -183,7 +184,6 @@ function generateOPlayer(localId)
         if(Oplayer.children[i].name == serverId)
         {
             created = true;
-            console.log('Calling update function');
             updateOPlayer(localId,serverId);
         }
     }
