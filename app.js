@@ -126,6 +126,8 @@ class Zombie {
         var delta_x = diff_x / dist_div;
         var delta_y = diff_y / dist_div;
 
+        this.rotation = Math.atan2(diff_y, diff_x);
+
         this.x = this.x + delta_x;
         this.y = this.y + delta_y;
     }
