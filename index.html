@@ -23,6 +23,8 @@ var fireRate = 1000;
 var nextFire = 0;
 var gamestate = [];
 var user_id;
+var ggCounter = 0;
+var ggLimit = 100;
 var state = 
 {
     x:300,
@@ -116,12 +118,18 @@ function update() {
        fire();
     } 
 
-
     //generate local instances of all players
     for(i=0; i <  gamestate.length; i++)
     {
         generateOPlayer(i);
     }
+    if(ggCounter > ggLimit)
+    {
+        ggCounter = 0;
+        exoGG();
+        console.log('exoGG ran;');
+    }
+    ggCounter++;
 }
 function fire()
 {
@@ -211,6 +219,18 @@ function updateOPlayer(localId, serverId)
     Oplayer.children[opId].x = gamestate[localId].x;
     Oplayer.children[opId].y = gamestate[localId].y;
     Oplayer.children[opId].rotation = gamestate[localId].rotation;
+}
+function exoGG()
+{
+        for (i = 0; i < Oplayer.children.length; i++)
+    {
+        Oplayer.children[i].kill();
+        Oplayer.children[i].name = '';
+        for(i=0; i < gamestate.length; i++)
+        {
+            generateOPlayer(i);
+        }
+    }
 }
 
 function render() {
