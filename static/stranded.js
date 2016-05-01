@@ -243,10 +243,6 @@ socket.on('gamestate', function(data) {
     }
 });
 
-socket.on('user-dc', function(data) {
-    //exoGG(data.id);
-});
-
 setInterval(function() {
     socket.emit('state', state);
 }, 100);
