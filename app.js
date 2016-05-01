@@ -80,13 +80,10 @@ setInterval(function(){
     io.sockets.emit('gamestate', collect_gamestate());
 }, 100);
 
-// Zombies
-var zombie_id = -1;
-
 class Zombie {
 
     constructor() {
-        this.id = zombie_id--;
+        this.id = ids_given++;
         this.x = 500;
         this.y = 500;
         this.rotation = 0;

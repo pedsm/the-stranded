@@ -121,13 +121,30 @@ function update() {
     //generate local instances of all players
     for(i=0; i <  gamestate.length; i++)
     {
-        generateOPlayer(i);
-    }
-    if(gamestate.length > Oplayer.children.length)
-    {
-        exoGG();
+        generate(i);
     }
 }
+function generate(localID)
+{
+    if(opExists(localID))
+    {
+        Oplayer.children[localID].x = gamestate[localID].x;
+        Oplayer.children[localID].y = gamestate[localID].y;
+        Oplayer.children[localID].rotation = gamestate[localID].rotaiton;
+    }else{
+        Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID],gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
+    }
+}
+function opExists(localID)
+{
+    if (Oplayer.children.length >  gamestate.length)
+    {
+        return true;
+    }else{
+        return false;
+    }
+}
+
 function fire()
 {
     if(game.time.now > nextFire && bullets.countDead() > 0)
@@ -180,64 +197,6 @@ function createOPlayer(x,y,rot,id,skin)
     return temp;
 }
 //create a new Oplayer by id on gamestate
-function generateOPlayer(localId)
-{
-    created = false;
-    serverId = gamestate[localId].id;
-    for (i = 0; i < Oplayer.children.length; i++)
-    { 
-        if(Oplayer.children[i].name == serverId)
-        {
-            created = true;
-            updateOPlayer(localId,serverId);
-        }
-    }
-
-    if(created == false)
-    {
-        temp = Oplayer.addChild(createOPlayer(
-        gamestate[localId].x,
-        gamestate[localId].y,
-        gamestate[localId].rotation,
-        gamestate[localId].id,
-        gamestate[localId].skin
-        ));
-    }
-}
-function updateOPlayer(localId, serverId)
-{
-    var opId;
-    console.log("local id is "+ localId + "serverId is"+ serverId);
-    for (t = 0; t < Oplayer.children.length; t++)
-    {
-        if(Oplayer.children[t].name == gamestate[localId].id);
-        {
-            opId = t;
-        }
-    }
-    Oplayer.children[opId].x = gamestate[localId].x;
-    Oplayer.children[opId].y = gamestate[localId].y;
-    Oplayer.children[opId].rotation = gamestate[localId].rotation;
-}
-function exoGG()
-{
-    for(j = 0; j < Oplayer.children.length; j++)    
-    {
-        for(i = 0; i <  gamestate.length; i++)
-        {
-            var safeMate = false;
-           if(gamestate[i].id == Oplayer.children[j].name)
-           {
-                safeMate = true;
-           }
-        }
-        if(!safeMate)
-        {
-            Oplayer.children.splice(j,1);
-            console.log("OYOYOYOY something got deleted!11");
-        }
-    }
-}
 
 function render() {
         //camera follow function debugging info
