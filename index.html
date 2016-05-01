@@ -23,6 +23,8 @@ var fireRate = 1000;
 var nextFire = 0;
 var gamestate = [];
 var user_id;
+var ggCounter = 0;
+var ggLimit = 100;
 var state = 
 {
     x:300,
@@ -116,12 +118,18 @@ function update() {
        fire();
     } 
 
-
     //generate local instances of all players
     for(i=0; i <  gamestate.length; i++)
     {
         generateOPlayer(i);
     }
+    if(ggCounter > ggLimit)
+    {
+        ggCounter = 0;
+        exoGG();
+        console.log('exoGG ran;');
+    }
+    ggCounter++;
 }
 function fire()
 {
@@ -165,13 +173,13 @@ function rotatePlayer()
         //state.rotation = player.rotation;
 }
 //creates a new Oplayer
-function createOPlayer(x,y,rot,id)
+function createOPlayer(x,y,rot,id,skin)
 {
     var temp = Oplayer.create(x,y,'pl1');
     temp.rotation = rot;
     temp.name = id;
     temp.anchor.setTo(0.5,0.5);
-    temp.frame = 6;
+    temp.frame = (skin*6)-1;
     return temp;
 }
 //create a new Oplayer by id on gamestate
@@ -193,7 +201,8 @@ function generateOPlayer(localId)
         gamestate[localId].x,
         gamestate[localId].y,
         gamestate[localId].rotation,
-        gamestate[localId].id
+        gamestate[localId].id,
+        gamestate[localId].skin
         ));
     }
 }
@@ -210,6 +219,18 @@ function updateOPlayer(localId, serverId)
     Oplayer.children[opId].x = gamestate[localId].x;
     Oplayer.children[opId].y = gamestate[localId].y;
     Oplayer.children[opId].rotation = gamestate[localId].rotation;
+}
+function exoGG()
+{
+        for (i = 0; i < Oplayer.children.length; i++)
+    {
+        Oplayer.children[i].kill();
+        Oplayer.children[i].name = '';
+        for(i=0; i < gamestate.length; i++)
+        {
+            generateOPlayer(i);
+        }
+    }
 }
 
 function render() {
