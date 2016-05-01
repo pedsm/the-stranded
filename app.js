@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
         socket.x = data.x;
         socket.y = data.y;
         socket.rotation = data.rotation;
-        console.log(socket.rotation);
+        socket.skin = data.skin;
     });
 
 
@@ -52,7 +52,7 @@ function collect_gamestates() {
     states = [];
     Object.keys(io.sockets.sockets).forEach(function(id) {
         var socket = io.sockets.connected[id];
-        states.push({x: socket.x, y: socket.y, rotation: socket.rotation, id: socket.userid});
+        states.push({x: socket.x, y: socket.y, rotation: socket.rotation, id: socket.userid, skin:socket.skin});
     })
     return states;
 
