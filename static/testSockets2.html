@@ -22,13 +22,13 @@ var velocity = 150;
 var gamestate = [];
 var state = 
 {
-    x:0,
-    y:0,
+    x:300,
+    y:300,
     rotation:0
 }
 var player;
 var cursors;
-
+var Oplayer;
 //Preloads(Sprites)
 function preload() {
     game.load.image('pl1', 'assets/hitman1_gun.png');
@@ -48,6 +48,7 @@ function create() {
 
     //creating groups
     stars = game.add.group(); 
+    Oplayer = game.add.group();
 
     //adding WASD support
     this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -130,11 +131,19 @@ function rotatePlayer()
         player.rotation = Math.atan2((y2-y1),(x2-x1));
         //state.rotation = player.rotation;
 }
+//creates a new Oplayer
+function createOPlayer(x,y,rot)
+{
+    var temp = Oplayer.create(x,y,'pl1');
+    temp.rotation = rot;
+    return temp;
+}
+
 function render() {
         //camera follow function debugging info
         //game.debug.cameraInfo(game.camera, 32, 32);
-        //game.debug.spriteCoords(player, 32, 500);
-
+        //game.debug.spriteCoords(player, 32, 500); 
+}
 // Socket.io stuff
 var socket = io();
 
@@ -146,7 +155,7 @@ socket.on('gamestate', function(data) {
 setInterval(function() {
     socket.emit('state', state);
 }, 100);
-}
+
 </script>
 </body>
 </html>
