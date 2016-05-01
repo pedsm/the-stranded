@@ -6,9 +6,10 @@ var gameport = process.env.PORT || 4004,
     io      = require('socket.io')(server),
     UUID    = require('node-uuid'),
     verbose = false,
-    updates_per_second = 30,
+    update_delta = 30, //ms
     list_of_zombies = [],
     zombies_puser_pmin = 3,
+    zombie_velocity = 50,
     zombies = [];
 
 
@@ -64,8 +65,15 @@ function collect_userstates() {
 
 }
 
+function collect_zombiestates() {
+    for (var z = 0; z < zombies.length; z++) {
+        zombies[z].update();
+    }
+    return zombies;
+}
+
 function collect_gamestate() {
-    return collect_userstates().concat(zombies);
+    return collect_userstates().concat(collect_zombiestates());
 }
     
 setInterval(function(){
@@ -105,15 +113,16 @@ class Zombie {
         return socket;
     }
 
-    state() {
-        return {x: this.x, y: this.y, rotation: this.rotation, skin: this.costume, id: this.id}
+    update() {
+        var timedelta = update_delta / 1000;
+        this.x = this.x + (zombie_velocity * timedelta);
     }
 
 }
 
 // Create new zombies
 setInterval(function() {
-   console.log('Generating ' + collect_userstates().length +  ' zombies: ');
+   console.log('Generating ' + collect_userstates().length +  ' zombies.');
    var zombie = new Zombie();
    zombies.push(zombie);
 }, 60000 / zombies_puser_pmin );
