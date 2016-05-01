@@ -31,7 +31,7 @@ var ids_given = 0;
 
 io.on('connection', function(socket) {
     socket.userid = ids_given++;
-    socket.emit( 'onconnected', { id: socket.userid } );
+    socket.emit( 'userid', { id: socket.userid } );
     console.log('player number ' + socket.userid + ' connected');
 
     socket.on('disconnect', function() {
@@ -51,7 +51,7 @@ function collect_gamestates() {
     states = [];
     Object.keys(io.sockets.sockets).forEach(function(id) {
         var socket = io.sockets.connected[id];
-        states.push({x: socket.x, y: socket.y, rotation: socket.rotation});
+        states.push({x: socket.x, y: socket.y, rotation: socket.rotation, id: socket.userid});
     })
     return states;
 
