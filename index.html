@@ -165,13 +165,13 @@ function rotatePlayer()
         //state.rotation = player.rotation;
 }
 //creates a new Oplayer
-function createOPlayer(x,y,rot,id)
+function createOPlayer(x,y,rot,id,skin)
 {
     var temp = Oplayer.create(x,y,'pl1');
     temp.rotation = rot;
     temp.name = id;
     temp.anchor.setTo(0.5,0.5);
-    temp.frame = 6;
+    temp.frame = (skin*6)-1;
     return temp;
 }
 //create a new Oplayer by id on gamestate
@@ -193,7 +193,8 @@ function generateOPlayer(localId)
         gamestate[localId].x,
         gamestate[localId].y,
         gamestate[localId].rotation,
-        gamestate[localId].id
+        gamestate[localId].id,
+        gamestate[localId].skin
         ));
     }
 }
