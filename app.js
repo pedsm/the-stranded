@@ -3,7 +3,6 @@
 var gameport = process.env.PORT || 4004,
     app = require('express')(),
     server = require('http').Server(app), io      = require('socket.io')(server),
-    UUID    = require('node-uuid'),
     verbose = false,
     update_delta = 30, //ms
     list_of_zombies = [],
@@ -88,12 +87,12 @@ class Zombie {
 
     constructor() {
         this.id = ids_given++;
-        this.x = 500;
-        this.y = 500;
+        this.x = Math.floor(Math.random() * 1920);
+        this.y = Math.floor(Math.random() * 1920);
         this.rotation = 0;
 
         // Costume id for a zombie
-        this.skin = 5;
+        this.skin = 11;
     }
 
     nearest_user() {
