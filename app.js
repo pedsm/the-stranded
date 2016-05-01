@@ -8,7 +8,7 @@ var gameport = process.env.PORT || 4004,
     verbose = false,
     update_delta = 30, //ms
     list_of_zombies = [],
-    zombies_puser_pmin = 3,
+    zombies_puser_pmin = 10,
     zombie_velocity = 50,
     zombies = [];
 
@@ -43,6 +43,11 @@ io.on('connection', function(socket) {
     socket.on('disconnect', function() {
         io.sockets.emit('user-dc', {id: socket.userid});
         console.log('player number ' + socket.userid + ' disconnected');
+        if (collect_userstates().length == 0) {
+            console.log('Deleting all zombies');
+            
+        }
+            
     });
 
     socket.on('state', function(data) {
