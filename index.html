@@ -20,6 +20,7 @@ var starArray = new Array();
 var stars;
 var velocity = 150;
 var gamestate = [];
+var user_id;
 var state = 
 {
     x:300,
@@ -146,9 +147,17 @@ function render() {
 // Socket.io stuff
 var socket = io();
 
+socket.on('userid', function(data) {
+    user_id = data.id;
+});
+
 socket.on('gamestate', function(data) {
-    gamestate=data;
-    console.log(gamestate.length);
+    gamestate = data;
+    for (var i = 0; i<gamestate.length; i++) {
+        if (gamestate[i].id == user_id) {
+            gamestate.splice(i, 1);
+        }
+    }
 });
 
 setInterval(function() {
