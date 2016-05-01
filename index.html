@@ -18,7 +18,7 @@
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var starArray = new Array();
 var stars;
-var velocity = 150;
+var velocity = 250;
 var fireRate = 1000;
 var nextFire = 0;
 var gamestate = [];
@@ -131,6 +131,12 @@ function update() {
     {
         generate(i);
     }
+    game.physics.arcade.overlap(bullets, Oplayer, killerino, this, this);
+}
+function killerino(killed)
+{
+    killed.kill();
+    console.log('ez kill');
 }
 function matrixFloor(x,y)
 {
