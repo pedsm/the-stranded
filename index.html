@@ -123,13 +123,6 @@ function update() {
     {
         generateOPlayer(i);
     }
-    if(ggCounter > ggLimit)
-    {
-        ggCounter = 0;
-        exoGG();
-        console.log('exoGG ran;');
-    }
-    ggCounter++;
 }
 function fire()
 {
@@ -220,15 +213,15 @@ function updateOPlayer(localId, serverId)
     Oplayer.children[opId].y = gamestate[localId].y;
     Oplayer.children[opId].rotation = gamestate[localId].rotation;
 }
-function exoGG()
+function exoGG(serverId)
 {
-        for (i = 0; i < Oplayer.children.length; i++)
+    for(i = 0; i < gamestate.length; i++)
     {
-        Oplayer.children[i].kill();
-        Oplayer.children[i].name = '';
-        for(i=0; i < gamestate.length; i++)
+        if(gamestate[i].id  == serverId)
         {
-            generateOPlayer(i);
+            localId = i;
+            Oplaye.children[i].kill();
+            Oplaye.children[i].kill();
         }
     }
 }
