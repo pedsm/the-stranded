@@ -5,7 +5,7 @@ var gameport = process.env.PORT || 4004,
     io      = require('socket.io')(server),
     UUID    = require('node-uuid'),
     verbose = false,
-    updates_per_second = 10;
+    updates_per_second = 30;
 
 
 // Setup express
