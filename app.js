@@ -2,14 +2,13 @@
 // quick setup server.
 var gameport = process.env.PORT || 4004,
     app = require('express')(),
-    server = require('http').Server(app),
-    io      = require('socket.io')(server),
+    server = require('http').Server(app), io      = require('socket.io')(server),
     UUID    = require('node-uuid'),
     verbose = false,
     update_delta = 30, //ms
     list_of_zombies = [],
     zombies_puser_pmin = 10,
-    zombie_velocity = 50,
+    zombie_velocity = 70,
     zombies = [];
 
 
@@ -94,18 +93,18 @@ class Zombie {
         this.rotation = 0;
 
         // Costume id for a zombie
-        this.costume = 5;
+        this.skin = 5;
     }
 
     nearest_user() {
-        sockets = collect_userstates();
-        min_distance = Number.MAX_SAFE_INTEGER;
-        closest_user = null;
+        var sockets = collect_userstates();
+        var min_distance = Number.MAX_SAFE_INTEGER;
+        var closest_user = null;
         for (var i = 0; i<sockets.length; i++) {
-            socket = sockets[i];
-            distance = Math.sqrt(socket.x * socket.x + socket.y * socket.y);
-            if (distance < max_distance) {
-                max_distance = distance;
+            var socket = sockets[i];
+            var distance = Math.sqrt(socket.x * socket.x + socket.y * socket.y);
+            if (distance < min_distance) {
+                min_distance = distance;
                 closest_user = socket;
 
             }
@@ -117,14 +116,24 @@ class Zombie {
 
     update() {
         var timedelta = update_delta / 1000;
-        this.x = this.x + (zombie_velocity * timedelta);
+        var user = this.nearest_user();
+
+        var diff_x = user.x - this.x;
+        var diff_y = user.y - this.y;
+        var total_dist = Math.sqrt(diff_y * diff_y + diff_x * diff_x);
+        var dist_div = total_dist / (zombie_velocity * 30 / 1000);
+        
+        var delta_x = diff_x / dist_div;
+        var delta_y = diff_y / dist_div;
+
+        this.x = this.x + delta_x;
+        this.y = this.y + delta_y;
     }
 
 }
 
 // Create new zombies
 setInterval(function() {
-   console.log('Generating ' + collect_userstates().length +  ' zombies.');
    var zombie = new Zombie();
    zombies.push(zombie);
 }, 60000 / zombies_puser_pmin );
