@@ -123,6 +123,10 @@ function update() {
     {
         generateOPlayer(i);
     }
+    if(gamestate.length > Oplayer.children.length)
+    {
+        exoGG();
+    }
 }
 function fire()
 {
@@ -188,6 +192,7 @@ function generateOPlayer(localId)
             updateOPlayer(localId,serverId);
         }
     }
+
     if(created == false)
     {
         temp = Oplayer.addChild(createOPlayer(
@@ -202,26 +207,34 @@ function generateOPlayer(localId)
 function updateOPlayer(localId, serverId)
 {
     var opId;
-    for (i = 0; i < Oplayer.children.length; i++)
+    console.log("local id is "+ localId + "serverId is"+ serverId);
+    for (t = 0; t < Oplayer.children.length; t++)
     {
-        if(Oplayer.children[i].name == serverId);
+        if(Oplayer.children[t].name == gamestate[localId].id);
         {
-            opId = i;
+            opId = t;
         }
     }
     Oplayer.children[opId].x = gamestate[localId].x;
     Oplayer.children[opId].y = gamestate[localId].y;
     Oplayer.children[opId].rotation = gamestate[localId].rotation;
 }
-function exoGG(serverId)
+function exoGG()
 {
-    for(i = 0; i < gamestate.length; i++)
+    for(j = 0; j < Oplayer.children.length; j++)    
     {
-        if(gamestate[i].id  == serverId)
+        for(i = 0; i <  gamestate.length; i++)
         {
-            localId = i;
-            Oplaye.children[i].kill();
-            Oplaye.children[i].kill();
+            var safeMate = false;
+           if(gamestate[i].id == Oplayer.children[j].name)
+           {
+                safeMate = true;
+           }
+        }
+        if(!safeMate)
+        {
+            Oplayer.children.splice(j,1);
+            console.log("OYOYOYOY something got deleted!11");
         }
     }
 }
@@ -248,7 +261,7 @@ socket.on('gamestate', function(data) {
 });
 
 socket.on('user-dc', function(data) {
-    exoGG(data.id);
+    //exoGG(data.id);
 });
 
 setInterval(function() {
