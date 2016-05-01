@@ -35,6 +35,7 @@ io.on('connection', function(socket) {
     console.log('player number ' + socket.userid + ' connected');
 
     socket.on('disconnect', function() {
+        io.sockets.emit('user-dc', {id: socket.userid});
         console.log('player number ' + socket.userid + ' disconnected');
     });
 
