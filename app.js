@@ -118,12 +118,16 @@ class Zombie {
 
         }
         
-        return socket;
+        return closest_user;
     }
 
     update() {
         var timedelta = update_delta / 1000;
         var user = this.nearest_user();
+
+        if (user == null) {
+            return
+        }
 
         var diff_x = user.x - this.x;
         var diff_y = user.y - this.y;
