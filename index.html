@@ -98,6 +98,10 @@ function update() {
         player.body.velocity.y = velocity;
     }
  
+    for(i=0; i <  gamestate.length; i++)
+    {
+        generateOPlayer(i);
+    }
 }
 
 function killAllS()
@@ -136,7 +140,46 @@ function createOPlayer(x,y,rot,id)
     var temp = Oplayer.create(x,y,'pl1');
     temp.rotation = rot;
     temp.name = id;
+    temp.anchor.setTo(0.5,0.5);
     return temp;
+}
+//create a new Oplayer by id on gamestate
+function generateOPlayer(localId)
+{
+    created = false;
+    serverId = gamestate[localId].id;
+    for (i = 0; i < Oplayer.children.length; i++)
+    { 
+        if(Oplayer.children[i].name == serverId)
+        {
+            created = true;
+            console.log('Calling update function');
+            updateOPlayer(localId,serverId);
+        }
+    }
+    if(created == false)
+    {
+        temp = Oplayer.addChild(createOPlayer(
+        gamestate[localId].x,
+        gamestate[localId].y,
+        gamestate[localId].rotation,
+        gamestate[localId].id
+        ));
+    }
+}
+function updateOPlayer(localId, serverId)
+{
+    var opId;
+    for (i = 0; i < Oplayer.children.length; i++)
+    {
+        if(Oplayer.children[i].name == serverId);
+        {
+            opId = i;
+        }
+    }
+    Oplayer.children[opId].x = gamestate[localId].x;
+    Oplayer.children[opId].y = gamestate[localId].y;
+    Oplayer.children[opId].rotation = gamestate[localId].rotation;
 }
 
 function render() {
