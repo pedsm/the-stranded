@@ -29,7 +29,6 @@ var state =
 }
 var player;
 var cursors;
-var Oplayer;
 //Preloads(Sprites)
 function preload() {
     game.load.image('pl1', '/static/assets/hitman1_gun.png');
@@ -49,7 +48,7 @@ function create() {
     //creating groups
     stars = game.add.group(); 
     Oplayer = game.add.group();
-
+    Oplayer.children = [];
     //adding WASD support
     this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -132,10 +131,11 @@ function rotatePlayer()
         //state.rotation = player.rotation;
 }
 //creates a new Oplayer
-function createOPlayer(x,y,rot)
+function createOPlayer(x,y,rot,id)
 {
     var temp = Oplayer.create(x,y,'pl1');
     temp.rotation = rot;
+    temp.name = id;
     return temp;
 }
 
