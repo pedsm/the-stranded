@@ -246,7 +246,7 @@ function createOPlayer(x,y,rot,id,skin)
 //create a new Oplayer by id on gamestate
 
 function render() {
-    game.debug.bodyInfo(player,16, 24);
+    //game.debug.bodyInfo(player,16, 24);
         //camera follow function debugging info
         //game.debug.cameraInfo(game.camera, 32, 32);
         //game.debug.spriteCoords(player, 32, 500); 
