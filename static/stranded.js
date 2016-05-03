@@ -240,7 +240,6 @@ function zombieExists(localID)
 }
 function generate(localID)
 {
-    Oplayer.children[localID].frame = 0;
     if(opExists(localID))
     {
         Oplayer.children[localID].x = gamestate[localID].x;
