@@ -2,6 +2,9 @@
 // The Stranded - A zombie game...
 //
 
+// Connect to server
+var socket = io();
+
 //Variable declarations
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
@@ -141,9 +144,9 @@ function collisionChecker()
                 {
                    if(item.y > item2.y-50 && item.y < item2.x+50)
                    {
-                       console.log('hit.GG '+ item2.name);
-                       //item.kill();
-                       //item2.kill();
+                       console.log('hit');
+                       var id = item2.name;
+                       socket.emit('kill', id);
                    } 
                 }
             })
@@ -275,7 +278,6 @@ function render() {
         //game.debug.spriteCoords(player, 32, 500); 
 }
 // Socket.io stuff
-var socket = io();
 
 socket.on('userid', function(data) {
     user_id = data.id;

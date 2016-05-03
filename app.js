@@ -106,8 +106,9 @@ io.on('connection', function(socket) {
     // Handle kill notifications (where ID is the ID of the zombie killed)
     socket.on('kill', function(data) {
         for (var i=0; i<zombies.length; i++) {
-            if (zombies[i].id == data) {
+            if (zombies[i].id == parseInt(data)) {
                 zombies.splice(i, 1);
+                console.log('Player ' + socket.userid + ' killed a zombie.');
             }
         }
     });
