@@ -1,21 +1,9 @@
-<!doctype html> 
-<html lang="en"> 
-<head> 
-    <meta charset="UTF-8" />
-    <title>The Stranded</title>
-    <script type="text/javascript" src="/static/phaser.min.js"></script>
-    <script type="text/javascript" src="/static/socket.io.js"></script>
-    <style type="text/css">
-        body {
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
+//
+// The Stranded - A zombie game...
+//
 
-<<<<<<< HEAD
-<script type="text/javascript">
 //Variable declarations
+
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var starArray = new Array();
 var stars;
@@ -228,7 +216,7 @@ function createOPlayer(x,y,rot,id,skin)
         temp.frame = 25;
     }else
     {
-        temp.frame = (skin*6)-1;
+    temp.frame = (skin*6)-1;
     }   
     return temp;
 }
@@ -255,23 +243,7 @@ socket.on('gamestate', function(data) {
     }
 });
 
-socket.on('user-dc', function(data) {
-    //exoGG(data.id);
-});
-
 setInterval(function() {
     socket.emit('state', state);
 }, 100);
 
-</script>
-    <audio autoplay="autoplay" controls="controls">  
-              <source src="static/zombie-crap.mp3" />  
-    </audio> 
-=======
-<script type="text/javascript" src="static/stranded.js"></script>
-<audio autoplay="autoplay" controls="controls" style="display: none">  
-    <source src="static/zombie-crap.mp3" />  
-</audio> 
->>>>>>> 792a2a57e3622a489e5f52fae46bec712d6af06f
-</body>
-</html>
