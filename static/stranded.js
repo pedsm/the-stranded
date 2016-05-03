@@ -132,19 +132,31 @@ function update() {
     {
         generate(i);
     }
+    //cleaning up of dead instances
+    if(gamestate.length < Oplayer.children.length)
+    {
+        cleanUP();
+    }
     //gg collision detection
     collisionChecker();
+}
+function cleanUP()
+{
+    Oplayer.children.splice(gamestate.length, 1);   
 }
 function collisionChecker()
 {
     bullets.forEach(function(item){
         Oplayer.forEach(function(item2)
             {
+                //console.log(item.x);
                 if(item.x > item2.x-50 && item.x < item2.x+50)
                 {
-                   if(item.y > item2.y-50 && item.y < item2.x+50)
+                   if(item.y > item2.y-50 && item.y < item2.y+50)
                    {
-                       console.log('hit');
+                       console.log('hit zombie id: '+item2.name );
+                       item2.x = 100000;
+                       item2.y = 100000;
                        var id = item2.name;
                        socket.emit('kill', id);
                    } 
@@ -199,6 +211,7 @@ function generate(localID)
         Oplayer.children[localID].y = gamestate[localID].y;
         Oplayer.children[localID].rotation = gamestate[localID].rotation;
         Oplayer.children[localID].frame = gamestate.skin*6-1; 
+        Oplayer.children[localID].name = gamestate[localID].id;
     }else{
         Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID],gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
     }
