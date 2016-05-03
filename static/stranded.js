@@ -4,7 +4,7 @@
 
 //Variable declarations
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var starArray = new Array();
 var stars;
 var velocity = 250;
@@ -49,13 +49,16 @@ function create() {
     }
 
     //creating player
+    game.physics.startSystem(Phaser.Physics.P2JS);
     player = game.add.sprite(state.x, state.y, 'pl1');
+    game.physics.p2.enable(player);
+    
     costume = Math.floor((Math.random() * 9) + 1);
     player.frame = (costume * 6) - 1;
-    game.physics.arcade.enable(player);
+    state.skin = costume;
+
     cursors = game.input.keyboard.createCursorKeys();
     player.anchor.setTo(0.5,0.5);
-    state.skin = costume;
 
     //creating groups
     stars = game.add.group(); 
@@ -120,7 +123,7 @@ function update() {
     {
         generate(i);
     }
-    game.physics.arcade.overlap(bullets, Oplayer, killerino, this, this);
+    game.physics.arcade.overlap(bullets, Oplayer, killerino, null, this);
 }
 function killerino(killed)
 {
@@ -149,6 +152,7 @@ function generate(localID)
         Oplayer.children[localID].x = gamestate[localID].x;
         Oplayer.children[localID].y = gamestate[localID].y;
         Oplayer.children[localID].rotation = gamestate[localID].rotation;
+        Oplayer.children[localID].frame = gamestate.skin*6-1; 
     }else{
         Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID],gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
     }
@@ -223,6 +227,7 @@ function createOPlayer(x,y,rot,id,skin)
 //create a new Oplayer by id on gamestate
 
 function render() {
+    game.debug.bodyInfo(player,16, 24);
         //camera follow function debugging info
         //game.debug.cameraInfo(game.camera, 32, 32);
         //game.debug.spriteCoords(player, 32, 500); 
