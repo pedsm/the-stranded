@@ -54,6 +54,9 @@ function create() {
     game.physics.enable(player,Phaser.Physics.ARCADE);
     player.collideWorldBounds = true;
     
+    ggPlayer = game.add.sprite(20,20,'pl1');
+    game.physics.enable(ggPlayer,Phaser.Physics.ARCADE);
+    
     costume = Math.floor((Math.random() * 9) + 1);
     player.frame = (costume * 6) - 1;
     state.skin = costume;
@@ -64,7 +67,9 @@ function create() {
     //creating groups
     stars = game.add.group(); 
     Oplayer = game.add.group();
+    game.physics.enable(Oplayer, Phaser.Physics.ARCADE)
     bullets = game.add.group();
+    game.physics.enable(bullets, Phaser.Physics.ARCADE)
     bullets.enableBody = true;
     bullets.createMultiple(50, 'bullet');
     bullets.setAll('checkWorldBounds', true);
@@ -124,11 +129,29 @@ function update() {
     {
         generate(i);
     }
-    game.physics.arcade.overlap(bullets, Oplayer, killerino, null, this);
+    //gg collision detection
+    collisionChecker();
 }
-function killerino(killed)
+function collisionChecker()
 {
-    killed.kill();
+    bullets.forEach(function(item){
+        Oplayer.forEach(function(item2)
+            {
+                if(item.x > item2.x-50 && item.x < item2.x+50)
+                {
+                   if(item.y > item2.y-50 && item.y < item2.x+50)
+                   {
+                       console.log('hit.GG '+ item2.name);
+                       //item.kill();
+                       //item2.kill();
+                   } 
+                }
+            })
+    });
+}
+function killerino(zombie)
+{
+    zombie.kill();
     console.log('ez kill');
 }
 function matrixFloor(x,y)
