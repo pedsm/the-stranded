@@ -48,7 +48,8 @@ function collect_userstates() {
             y: socket.y,
             rotation: socket.rotation,
             id: socket.userid,
-            skin: socket.skin
+            skin: socket.skin,
+            isZombie: false
         });
     })
     return states;
@@ -130,6 +131,7 @@ class Zombie {
         this.x = Math.floor(Math.random() * 1920);
         this.y = Math.floor(Math.random() * 1920);
         this.rotation = 0;
+        this.isZombie = true;
 
         // Costume id for a zombie
         this.skin = 11;
