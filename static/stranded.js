@@ -213,7 +213,7 @@ function generate(localID)
         Oplayer.children[localID].frame = gamestate.skin*6-1; 
         Oplayer.children[localID].name = gamestate[localID].id;
     }else{
-        Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID],gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
+        Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID].y,gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
     }
 }
 function opExists(localID)
