@@ -49,9 +49,10 @@ function create() {
     }
 
     //creating player
-    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.startSystem(Phaser.Physics.ARCADE);
     player = game.add.sprite(state.x, state.y, 'pl1');
-    game.physics.p2.enable(player);
+    game.physics.enable(player,Phaser.Physics.ARCADE);
+    player.collideWorldBounds = true;
     
     costume = Math.floor((Math.random() * 9) + 1);
     player.frame = (costume * 6) - 1;
@@ -78,7 +79,6 @@ function create() {
     //Camera follow
     game.camera.follow(player);
     game.world.setBounds(0, 0, 1920, 1920);
-
     //creating objects
 }
 
@@ -90,6 +90,7 @@ function update() {
     state.y = player.y;
     state.rotation = player.rotation;
 
+    playerCollision();
     rotatePlayer();
     if (this.leftKey.isDown || cursors.left.isDown)
     {
@@ -143,6 +144,25 @@ function matrixFloor(x,y)
     else
     {
         return 'dessert';
+    }
+}
+function playerCollision()
+{
+    if(player.x < 0)
+    {
+        player.x = 0;
+    }
+    if(player.y < 0)
+    {
+        player.y = 0;
+    }
+    if(player.x > game.world.width)
+    {
+        player.x = game.world.width;
+    }
+    if( player.y > game.world.height)
+    {
+        player.y = game.world.height;
     }
 }
 function generate(localID)
@@ -201,12 +221,11 @@ function rotatePlayer()
 {
         var x2 , x1, y2, y1;
         x2 = game.input.worldX;
-        x1 = state.x;
+        x1 = player.x;
         y2 = game.input.worldY;
-        y1 = state.y;
+        y1 = player.y;
 
         player.rotation = Math.atan2((y2-y1),(x2-x1));
-        //state.rotation = player.rotation;
 }
 //creates a new Oplayer
 function createOPlayer(x,y,rot,id,skin)
