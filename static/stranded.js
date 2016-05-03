@@ -14,6 +14,7 @@ var velocity = 250;
 var fireRate = 1000;
 var nextFire = 0;
 var gamestate = [];
+var zombiestate = [];
 var user_id;
 var ggCounter = 0;
 var ggLimit = 100;
@@ -297,13 +298,15 @@ socket.on('userid', function(data) {
 });
 
 socket.on('gamestate', function(data) {
-    gamestate = data;
+    gamestate = data.players;
+    zombiestate = data.zombies;
     for (var i = 0; i<gamestate.length; i++) {
         if (gamestate[i].id == user_id) {
             gamestate.splice(i, 1);
         }
     }
 });
+
 
 setInterval(function() {
     socket.emit('state', state);
