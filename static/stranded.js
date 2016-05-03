@@ -129,37 +129,46 @@ function update() {
     {
        fire();
     } 
+    //cleanUP to sync local registers
+    if(gamestate.length < Oplayer.children.length || zombiestate.length < zombies.children.length)
+    {
+        cleanUP();
+    }
 
     //generate local instances of all players
     for(i=0; i <  gamestate.length; i++)
     {
         generate(i);
     }
-    //cleaning up of dead instances
-    if(gamestate.length < Oplayer.children.length)
+    //generate local instances of zombies
+    for(i=0; i < zombiestate.length; i++)
     {
-        cleanUP();
+        generateZombie(i);
     }
     //gg collision detection
     collisionChecker();
 }
 function cleanUP()
 {
-    Oplayer.children.splice(gamestate.length, 1);   
+    Oplayer.children.splice(gamestate.length-1, 1);   
+    zombies.children.splice(0,1);
+    console.log("Clean up performed")
 }
 function collisionChecker()
 {
     bullets.forEach(function(item){
-        Oplayer.forEach(function(item2)
+        zombies.forEach(function(item2)
             {
                 //console.log(item.x);
-                if(item.x > item2.x-50 && item.x < item2.x+50)
+                if(item.x > item2.x - 50 && item.x < item2.x + 50)
                 {
                    if(item.y > item2.y-50 && item.y < item2.y+50)
                    {
                        console.log('hit zombie id: '+item2.name );
+                       item.kill();
                        item2.x = 100000;
                        item2.y = 100000;
+                       item2.isZombie = false;
                        var id = item2.name;
                        socket.emit('kill', id);
                    } 
@@ -206,8 +215,32 @@ function playerCollision()
         player.y = game.world.height;
     }
 }
+function generateZombie(localID)
+{
+    if(zombieExists(localID))
+    {
+        zombies.children[localID].reset();
+        zombies.children[localID].x = zombiestate[localID].x;
+        zombies.children[localID].y = zombiestate[localID].y;
+        zombies.children[localID].rotation = zombiestate[localID].rotation;
+        zombies.children[localID].name = zombiestate[localID].id;
+    }else{
+        zombies.children.addChild =createZombie(zombiestate[localID].x,zombiestate[localID].y,zombiestate[localID].rotation,zombiestate[localID].id);
+    }
+}
+function zombieExists(localID)
+{
+    if(zombies.children.length > zombiestate.length)
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
 function generate(localID)
 {
+    Oplayer.children[localID].frame = 0;
     if(opExists(localID))
     {
         Oplayer.children[localID].x = gamestate[localID].x;
@@ -269,12 +302,13 @@ function rotatePlayer()
 
         player.rotation = Math.atan2((y2-y1),(x2-x1));
 }
-function createZombie(x,y,rot)
+function createZombie(x,y,rot, id)
 {
-    var temp = zombie.create(x,y,'pl1');
-    temp.rotation = row;
+    var temp = zombies.create(x,y,'pl1');
+    temp.rotation = rot;
     temp.name = id;
     temp.frame = 25;
+    temp.anchor.setTo(0.5,0.5);
 }
 //creates a new Oplayer
 function createOPlayer(x,y,rot,id,skin)
