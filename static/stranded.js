@@ -70,9 +70,11 @@ function create() {
     //creating groups
     stars = game.add.group(); 
     Oplayer = game.add.group();
-    game.physics.enable(Oplayer, Phaser.Physics.ARCADE)
+    game.physics.enable(Oplayer, Phaser.Physics.ARCADE);
+    zombies = game.add.group();
+    game.physics.enable(Oplayer, Phaser.Physics.ARCADE);
     bullets = game.add.group();
-    game.physics.enable(bullets, Phaser.Physics.ARCADE)
+    game.physics.enable(bullets, Phaser.Physics.ARCADE);
     bullets.enableBody = true;
     bullets.createMultiple(50, 'bullet');
     bullets.setAll('checkWorldBounds', true);
@@ -265,6 +267,13 @@ function rotatePlayer()
         y1 = player.y;
 
         player.rotation = Math.atan2((y2-y1),(x2-x1));
+}
+function createZombie(x,y,rot)
+{
+    var temp = zombie.create(x,y,'pl1');
+    temp.rotation = row;
+    temp.name = id;
+    temp.frame = 25;
 }
 //creates a new Oplayer
 function createOPlayer(x,y,rot,id,skin)
