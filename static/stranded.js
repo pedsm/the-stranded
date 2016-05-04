@@ -7,11 +7,12 @@ var socket = io();
 
 //Variable declarations
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
-var starArray = new Array();
+var game = new Phaser.Game(document.body.clientWidth, document.body.clientHeight, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var starArray = new Array()
 var stars;
 var velocity = 250;
 var fireRate = 1000;
+var hitBox = 25;
 var nextFire = 0;
 var gamestate = [];
 var zombiestate = [];
@@ -160,9 +161,9 @@ function collisionChecker()
         zombies.forEach(function(item2)
             {
                 //console.log(item.x);
-                if(item.x > item2.x - 50 && item.x < item2.x + 50)
+                if(item.x > item2.x - hitBox && item.x < item2.x + hitBox)
                 {
-                   if(item.y > item2.y-50 && item.y < item2.y+50)
+                   if(item.y > item2.y-hitBox && item.y < item2.y+hitBox)
                    {
                        console.log('hit zombie id: '+item2.name );
                        item.kill();
