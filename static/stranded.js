@@ -247,6 +247,9 @@ function generateZombie(localID)
         zombies.children[localID].reset();
         zombies.children[localID].x = zombiestate[localID].x;
         zombies.children[localID].y = zombiestate[localID].y;
+        //t = game.add.tween(zombies.children[localID]);
+        //t.to({x:zombiestate[localID.x], y:zombiestate[localID.y]}, 100);
+        //t.start();
         zombies.children[localID].rotation = zombiestate[localID].rotation;
         zombies.children[localID].name = zombiestate[localID].id;
     }else{
@@ -267,8 +270,11 @@ function generate(localID)
 {
     if(opExists(localID))
     {
-        Oplayer.children[localID].x = gamestate[localID].x;
-        Oplayer.children[localID].y = gamestate[localID].y;
+        //Oplayer.children[localID].x = gamestate[localID].x;
+        //Oplayer.children[localID].y = gamestate[localID].y;
+        t = game.add.tween(Oplayer.children[localID]);
+        t.to({x:gamestate[localID.x], y:gamestate[localID.y]},100);
+        t.start();
         Oplayer.children[localID].rotation = gamestate[localID].rotation;
         Oplayer.children[localID].frame = gamestate.skin*6-1; 
         Oplayer.children[localID].name = gamestate[localID].id;
