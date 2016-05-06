@@ -2,18 +2,18 @@
     <head> 
         <meta charset="UTF-8" />
         <title>The Stranded</title>
-        <link rel="stylesheet" href="/static/style.css">
         <script type="text/javascript" src="/static/phaser.min.js"></script>
         <script type="text/javascript" src="/static/socket.io.js"></script>
+        <link rel="stylesheet" src="/static/style.cssl"/>
     </head>
     <body>
-        <script type="text/javascript" src="static/stranded.js"></script>
+        <!--<script type="text/javascript" src="static/stranded.js"></script>-->
         <audio autoplay="autoplay" controls="controls" style="display: none">  
                 <source src="static/zombie-crap.mp3" />  
        </audio> 
        <div id="menu">
-           <input placeholder="Name" type="text" id="name"/>
-           <input type="submit" onclick="makegame();"/>
+           <input type="text"/>
+           <input type="submit"/>
        </div>
     </body>
 </html>

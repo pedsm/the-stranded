@@ -7,7 +7,7 @@ var socket = io();
 
 //Variable declarations
 
-var game = new Phaser.Game(document.body.clientWidth, document.body.clientHeight, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game;
 var starArray = new Array()
 var stars;
 var velocity = 250;
@@ -24,10 +24,18 @@ var state =
     x:300,
     y:300,
     rotation:0,
-    skin:0
+    skin:0,
+    name:""
 }
 var player;
 var cursors;
+function makegame()
+{
+    state.name = document.getElementById("name").value;
+    document.getElementById("menu").remove();
+    game = new Phaser.Game(document.body.clientWidth, document.body.clientHeight, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+    
+}
 //Preloads(Sprites)
 function preload() {
     game.load.spritesheet('pl1', '/static/assets/vector_characters.png',100,101,60);
@@ -68,6 +76,9 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
     player.anchor.setTo(0.5,0.5);
+    nameText = game.add.text(state.x, state.y, state.name, {align: "center",fontSize: '20px', fill: '#000' });
+    nameText.anchor.x = 0;
+    nameText.x = nameText.x + nameText.width/2
 
     //creating groups
     stars = game.add.group(); 
@@ -108,7 +119,6 @@ function update() {
     {
         //  Move to the left
         player.body.velocity.x = -velocity;
-
         player.animations.play('left');
     }
     if (this.rightKey.isDown|| cursors.right.isDown)
@@ -148,12 +158,19 @@ function update() {
     }
     //gg collision detection
     collisionChecker();
+    nameUpdate();
+}
+function nameUpdate()
+{
+    nameText.x = player.x;
+    nameText.x = nameText.x;// + nameText.width/2;
+    nameText.anchor.x = 0.5;
+    nameText.y = player.y - 70;
 }
 function cleanUP()
 {
     Oplayer.children.splice(gamestate.length-1, 1);   
     zombies.children.splice(0,1);
-    console.log("Clean up performed")
 }
 function collisionChecker()
 {
@@ -176,11 +193,18 @@ function collisionChecker()
                 }
             })
     });
-}
-function killerino(zombie)
-{
-    zombie.kill();
-    console.log('ez kill');
+    zombies.forEach(function(item3)
+            {
+                if(item3.x > player.x - hitBox && item3.x < player.x + hitBox)
+                {
+                    if(item3.y > player.y - hitBox && item3.y < player.y + hitBox)
+                    {
+                        console.log('Player killed');
+                        game.destroy();
+                        socket.disconnect();
+                    }
+                }
+            });
 }
 function matrixFloor(x,y)
 {
