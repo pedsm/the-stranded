@@ -68,9 +68,6 @@ function create() {
     game.physics.enable(player,Phaser.Physics.ARCADE);
     player.collideWorldBounds = true;
     
-    ggPlayer = game.add.sprite(20,20,'pl1');
-    game.physics.enable(ggPlayer,Phaser.Physics.ARCADE);
-    
     costume = Math.floor((Math.random() * 9) + 1);
     player.frame = (costume * 6) - 1;
     state.skin = costume;
