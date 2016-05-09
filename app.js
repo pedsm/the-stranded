@@ -116,7 +116,7 @@ io.on('connection', function(socket) {
 // Continuously send _ALL_ clients a copy of the gamestate.
 setInterval(function(){
     io.sockets.emit('gamestate', {'players': collect_userstates(), 'zombies': collect_zombiestates()});
-}, 100);
+}, 30);
 
 // The Zombie class
 class Zombie {
