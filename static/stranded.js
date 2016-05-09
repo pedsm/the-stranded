@@ -295,7 +295,7 @@ function generate(localID)
         //t.to({x:gamestate[localID.x], y:gamestate[localID.y]},100);
         //t.start();
         Oplayer.children[localID].rotation = gamestate[localID].rotation;
-        Oplayer.children[localID].frame = gamestate.skin*6-1; 
+        Oplayer.children[localID].frame = (gamestate[localID].skin * 6)-1; 
         Oplayer.children[localID].name = gamestate[localID].id;
     }else{
         Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID].y,gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
