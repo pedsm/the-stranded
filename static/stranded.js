@@ -80,6 +80,7 @@ function create() {
 
     //creating groups
     stars = game.add.group(); 
+    otext = game.add.group();
     Oplayer = game.add.group();
     game.physics.enable(Oplayer, Phaser.Physics.ARCADE);
     zombies = game.add.group();
@@ -164,6 +165,10 @@ function nameUpdate()
     nameText.x = nameText.x;// + nameText.width/2;
     nameText.anchor.x = 0.5;
     nameText.y = player.y - 70;
+    if(otext.children.length > gamestate.length)
+    {
+        otext.children.splice(0,1);
+    }
 }
 function cleanUP()
 {
@@ -257,19 +262,8 @@ function generateZombie(localID)
         zombies.children[localID].rotation = zombiestate[localID].rotation;
         zombies.children[localID].name = zombiestate[localID].id;
         //debug name 
-        if(debug)
-        {
-        ztext[localID].reset();
-        ztext[localID].x = zombiestate[localID].x;
-        ztext[localID].anchor.x = 0.5;
-        ztext[localID].y = zombiestate[localID].y - 70;
-        }
     }else{
         zombies.children.addChild =createZombie(zombiestate[localID].x,zombiestate[localID].y,zombiestate[localID].rotation,zombiestate[localID].id);
-        if(debug)
-        {
-        ztext[localID] = game.add.text(zombiestate[localID].x, zombiestate[localID].y, zombiestate[localID].id, {align: "center",fontSize: '20px', fill: '#000' });
-        }
     }
 }
 function zombieExists(localID)
@@ -294,8 +288,15 @@ function generate(localID)
         Oplayer.children[localID].rotation = gamestate[localID].rotation;
         Oplayer.children[localID].frame = (gamestate[localID].skin * 6)-1; 
         Oplayer.children[localID].name = gamestate[localID].id;
+        //make name for oplayer
+        otext.children[localID].reset();
+        otext.children[localID].x = gamestate[localID].x;
+        otext.children[localID].anchor.x = 0.5;
+        otext.children[localID].y = gamestate[localID].y - 70;
+        otext.children[localID].text = gamestate[localID].name;
     }else{
         Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID].y,gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
+        game.add.text(gamestate[localID].x, gamestate[localID].y, gamestate[localID].name, {align: "center",fontSize: '15px', fill: '#000' }, otext);
     }
 }
 function opExists(localID)
