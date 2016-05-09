@@ -172,11 +172,11 @@ function cleanUP()
 {
     if(Oplayer.children.length > gamestate.length)
     {
-        Oplayer.children.splice(Oplayer.children.length - 1, 1);   
+        Oplayer.children.splice(0, 1);   
     }
     if(zombies.children.length > zombiestate.length)
     {
-        zombies.children.splice(zombies.children.length - 1, 1);
+        zombies.children.splice(0, 1);
     }
 }
 function collisionChecker()
