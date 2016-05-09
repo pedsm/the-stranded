@@ -6,3 +6,6 @@ The stranded is a multiplayer HTML5 game made with NodeJS, Socket.io, ExpressJS 
     $ cd the-stranded
     $ npm install
     $ node app.js
+Restarting the server
+
+    $sudo service stranded restart
