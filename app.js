@@ -43,14 +43,12 @@ function collect_userstates() {
     var states = [];
     Object.keys(io.sockets.sockets).forEach(function(id) {
         var socket = io.sockets.connected[id];
-        states.push({
-            x: socket.x,
-            y: socket.y,
-            rotation: socket.rotation,
-            id: socket.userid,
-            skin: socket.skin,
-            isZombie: false
-        });
+        var state = socket.state;
+        if (socket.state) {
+            state.isZombie = false;
+            state.id = socket.userid;
+            states.push(state);
+        }
     })
     return states;
 
@@ -98,10 +96,7 @@ io.on('connection', function(socket) {
     // Handling the client sending its state. At the moment, we trust it
     // blindly.
     socket.on('state', function(data) {
-        socket.x = data.x;
-        socket.y = data.y;
-        socket.rotation = data.rotation;
-        socket.skin = data.skin;
+        socket.state = data;
     });
 
     // Handle kill notifications (where ID is the ID of the zombie killed)
