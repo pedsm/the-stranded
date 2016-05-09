@@ -12,8 +12,10 @@
                 <source src="static/zombie-crap.mp3" />  
        </audio> 
        <div id="menu">
+       <form onsubmit="makegame(); return false;">
            <input placeholder="Name" type="text" id="name"/>
-           <input type="submit" onclick="makegame();"/>
+           <input type="submit"/>
+       </form>
        </div>
     </body>
 </html>
