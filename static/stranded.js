@@ -414,5 +414,5 @@ socket.on('gamestate', function(data) {
 
 setInterval(function() {
     socket.emit('state', state);
-}, 100);
+}, 30);
 
