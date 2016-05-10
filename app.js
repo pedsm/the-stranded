@@ -19,7 +19,7 @@ var gameport        = process.env.PORT || 4004,
 
 // Process command line arguments;
 process.argv.forEach(function (val, index, array) {
-    if (val = "-noZombies") {
+    if (val == "-noZombies") {
         createZombies = false;
     }
 });
@@ -176,7 +176,7 @@ class Zombie {
         var diff_x = user.x - this.x;
         var diff_y = user.y - this.y;
         var total_dist = Math.sqrt(diff_y * diff_y + diff_x * diff_x);
-        var dist_div = total_dist / (zombie_velocity * 30 / 1000);
+        var dist_div = total_dist / (zombie_velocity * timedelta);
         
         var delta_x = diff_x / dist_div;
         var delta_y = diff_y / dist_div;
