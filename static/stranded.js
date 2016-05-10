@@ -7,6 +7,8 @@ var socket = io();
 
 //Variable declarations
 var debug = false;
+var ui = [];
+var leaderboard;
 var game;
 var starArray = new Array()
 var stars;
@@ -26,7 +28,8 @@ var state =
     y:300,
     rotation:0,
     skin:0,
-    name:""
+    name:"",
+    score:0
 }
 var player;
 var cursors;
@@ -92,6 +95,11 @@ function create() {
     bullets.setAll('checkWorldBounds', true);
     bullets.setAll('outOfBoundsKill', true);
 
+    //creating UI elements
+    ui[0] = game.add.text(15, 15, 'Score:0', {align: "left",fontSize: '20px', fill: '#000' });
+    ui[0].fixedToCamera = true;
+    ui[1] = game.add.text(document.body.clientWidth - 170,15, 'Leaderboard:',{align:"center",fontSize: '20px', fill:'#000'});
+    ui[1].fixedToCamera = true;
     //adding WASD support
     this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -158,6 +166,12 @@ function update() {
     //gg collision detection
     collisionChecker();
     nameUpdate();
+    uiUpdate();
+}
+function uiUpdate()
+{
+    ui[0].text = "Score:" + state.score;
+    ui[1].text = "Leaderboard:" + leaderboard;
 }
 function nameUpdate()
 {
