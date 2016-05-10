@@ -17,6 +17,7 @@ var fireRate = 1000;
 var bulletSpeed = 2000;
 var hitBox = 25;
 var nextFire = 0;
+var prevUpdate;
 var gamestate = [];
 var zombiestate = [];
 var ztext = [];
@@ -34,6 +35,7 @@ var state =
 }
 var player;
 var cursors;
+var lastUpdate;
 function makegame()
 {
     state.name = document.getElementById("name").value;
@@ -53,6 +55,9 @@ function preload() {
     game.load.image('dessert', '/static/assets/PNG/tile_06.png');
     game.load.image('grass', '/static/assets/PNG/tile_03.png');
     game.load.image('bullet', '/static/assets/bullet.png');
+    //ui elements
+    game.load.image('barBG', '/static/assets/progressBG.png');
+    game.load.image('bar', '/static/assets/progress.png');
 }
 //Creating
 function create() {
@@ -105,6 +110,13 @@ function create() {
     ui[0].fixedToCamera = true;
     ui[1] = game.add.text(document.body.clientWidth - 170,15, 'Leaderboard:',{align:"center",fontSize: '20px', fill:'#000'});
     ui[1].fixedToCamera = true;
+    ui[3] = game.add.sprite(15,30, 'bar');
+    ui[3].fixedToCamera = true;
+    ui[3].width = 80;
+    ui[2] = game.add.sprite(15,30,'barBG');
+    ui[2].fixedToCamera = true;
+    ui[2].width = 80;
+    
     //adding WASD support
     this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -124,29 +136,29 @@ function update() {
     state.x = player.x;
     state.y = player.y;
     state.rotation = player.rotation;
-
     playerCollision();
     rotatePlayer();
+    var delta = game.time.now - lastUpdate; 
+    console.log(delta);
     if (this.leftKey.isDown || cursors.left.isDown)
     {
-        //  Move to the left
-        player.body.velocity.x = -velocity;
-        player.animations.play('left');
+        //player.body.velocity.x = -velocity;
+        player.body.x -= velocity * delta/1000;
     }
     if (this.rightKey.isDown|| cursors.right.isDown)
     {
-        //  Move to the right
-        player.body.velocity.x = velocity;
-
-        player.animations.play('right');
+        //player.body.velocity.x = velocity;
+        player.body.x += velocity * delta/1000;
     }
     if (this.upKey.isDown || cursors.up.isDown)
     {
-        player.body.velocity.y = -velocity;
+        //player.body.velocity.y = -velocity;
+        player.body.y -= velocity * delta/1000;
     }
     if (this.downKey.isDown || cursors.down.isDown)
     {
-        player.body.velocity.y = velocity;
+        //player.body.velocity.y = velocity;
+        player.body.y += velocity * delta/1000;
     }
     if (game.input.activePointer.isDown)
     {
@@ -172,11 +184,21 @@ function update() {
     collisionChecker();
     nameUpdate();
     uiUpdate();
+    lastUpdate = game.time.now;
 }
 function uiUpdate()
 {
     ui[0].text = "Score:" + state.score;
-    ui[1].text = "Leaderboard:" + leaderboard;
+    ui[1].text = "Leaderboard:\n" + leaderboard;
+    ui[1].x = document.body.clientWidth - 170;
+    if(game.time.now > nextFire)
+    {
+        ui[3].width = 80;
+    }else{
+        ui[3].width = 80 - ((nextFire - game.time.now)/fireRate * 80);
+    }
+    game.scale.setGameSize(document.body.clientWidth,document.body.clientHeight);
+
 }
 function nameUpdate()
 {
