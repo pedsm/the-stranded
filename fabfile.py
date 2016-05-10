@@ -3,6 +3,9 @@ from fabric.contrib.files import *
 from fabric.contrib.project import rsync_project
 from subprocess import check_output
 
+env.user = 'root'
+env.hosts = ['thestranded.net']
+
 def deploy():
     # Skip node modules. 300M of crap
     local('tar\
@@ -22,7 +25,6 @@ def deploy():
     run('sudo service stranded restart')
     run('rm /tmp/stranded.tar.gz')
 
-def production():
-    env.user = 'root'
-    env.hosts = ['thestranded.net']
+def restart():
+    run('service stranded restart');
 
