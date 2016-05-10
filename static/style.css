@@ -6,6 +6,17 @@ body
 {
     margin:0px;
 }
+canvas
+{
+    -webkit-filter:contrast(1)grayscale(0.6)saturate(3) sepia(0.4)brightness(0.7);
+}
+#logo
+{
+    margin-right:auto;
+    margin-left:auto;
+    padding-top:30%;
+    width:100%;
+}
 #menu
 {
     width:400px;

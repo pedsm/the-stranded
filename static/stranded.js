@@ -14,6 +14,7 @@ var starArray = new Array()
 var stars;
 var velocity = 250;
 var fireRate = 1000;
+var bulletSpeed = 2000;
 var hitBox = 25;
 var nextFire = 0;
 var gamestate = [];
@@ -36,6 +37,10 @@ var cursors;
 function makegame()
 {
     state.name = document.getElementById("name").value;
+    if(state.name == "")
+    {
+        state.name = 'The zombo killer';
+    }
     document.getElementById("menu").remove();
     game = new Phaser.Game(document.body.clientWidth, document.body.clientHeight, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
     
@@ -207,6 +212,8 @@ function collisionChecker()
                    {
                        console.log('hit zombie id: '+item2.name );
                        item.kill();
+                       item.x = 100000;
+                       item.y = 100000;
                        item2.x = 100000;
                        item2.y = 100000;
                        item2.isZombie = false;
@@ -330,7 +337,7 @@ function fire()
         nextFire = game.time.now + fireRate;
         var bullet = bullets.getFirstDead();
         bullet.reset(player.x - 8, player.y - 8);
-        game.physics.arcade.moveToPointer(bullet, 800); 
+        game.physics.arcade.moveToPointer(bullet, bulletSpeed); 
     }   
 }
 
