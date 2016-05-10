@@ -14,8 +14,15 @@ var gameport        = process.env.PORT || 4004,
     list_of_zombies = [],
     zombies_puser_pmin = 10,
     zombie_velocity = 70,
-    zombies = [];
+    zombies = [],
+    createZombies = true;
 
+// Process command line arguments;
+process.argv.forEach(function (val, index, array) {
+    if (val = "-noZombies") {
+        createZombies = false;
+    }
+});
 
 // Start server.
 server.listen(gameport);
@@ -184,7 +191,10 @@ class Zombie {
 
 // Periodically create new zombies at a steady rate.
 setInterval(function() {
-   var zombie = new Zombie();
-   zombies.push(zombie);
+    if (!createZombies) {
+        return;
+    }
+    var zombie = new Zombie();
+    zombies.push(zombie);
 }, 60000 / zombies_puser_pmin);
 
