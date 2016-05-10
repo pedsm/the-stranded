@@ -140,7 +140,11 @@ class Zombie {
         var closest_user = null;
         for (var i = 0; i<sockets.length; i++) {
             var socket = sockets[i];
-            var distance = Math.sqrt(socket.x * socket.x + socket.y * socket.y);
+
+            var diff_x = socket.x - this.x;
+            var diff_y = socket.y - this.y;
+
+            var distance = Math.sqrt(diff_x * diff_x + diff_y * diff_y);
             if (distance < min_distance) {
                 min_distance = distance;
                 closest_user = socket;
