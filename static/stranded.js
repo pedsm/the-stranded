@@ -7,11 +7,14 @@ var socket = io();
 
 //Variable declarations
 var debug = false;
+var ui = [];
+var leaderboard;
 var game;
 var starArray = new Array()
 var stars;
 var velocity = 250;
 var fireRate = 1000;
+var bulletSpeed = 2000;
 var hitBox = 25;
 var nextFire = 0;
 var gamestate = [];
@@ -26,13 +29,18 @@ var state =
     y:300,
     rotation:0,
     skin:0,
-    name:""
+    name:"",
+    score:0
 }
 var player;
 var cursors;
 function makegame()
 {
     state.name = document.getElementById("name").value;
+    if(state.name == "")
+    {
+        state.name = 'The zombo killer';
+    }
     document.getElementById("menu").remove();
     game = new Phaser.Game(document.body.clientWidth, document.body.clientHeight, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
     
@@ -92,6 +100,11 @@ function create() {
     bullets.setAll('checkWorldBounds', true);
     bullets.setAll('outOfBoundsKill', true);
 
+    //creating UI elements
+    ui[0] = game.add.text(15, 15, 'Score:0', {align: "left",fontSize: '20px', fill: '#000' });
+    ui[0].fixedToCamera = true;
+    ui[1] = game.add.text(document.body.clientWidth - 170,15, 'Leaderboard:',{align:"center",fontSize: '20px', fill:'#000'});
+    ui[1].fixedToCamera = true;
     //adding WASD support
     this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -158,6 +171,12 @@ function update() {
     //gg collision detection
     collisionChecker();
     nameUpdate();
+    uiUpdate();
+}
+function uiUpdate()
+{
+    ui[0].text = "Score:" + state.score;
+    ui[1].text = "Leaderboard:" + leaderboard;
 }
 function nameUpdate()
 {
@@ -193,6 +212,8 @@ function collisionChecker()
                    {
                        console.log('hit zombie id: '+item2.name );
                        item.kill();
+                       item.x = 100000;
+                       item.y = 100000;
                        item2.x = 100000;
                        item2.y = 100000;
                        item2.isZombie = false;
@@ -316,7 +337,7 @@ function fire()
         nextFire = game.time.now + fireRate;
         var bullet = bullets.getFirstDead();
         bullet.reset(player.x - 8, player.y - 8);
-        game.physics.arcade.moveToPointer(bullet, 800); 
+        game.physics.arcade.moveToPointer(bullet, bulletSpeed); 
     }   
 }
 
