@@ -9,6 +9,7 @@ var socket = io();
 var debug = false;
 var ui = [];
 var leaderboard;
+var mapsize = 6500;
 var game;
 var starArray = new Array()
 var stars;
@@ -26,8 +27,8 @@ var ggCounter = 0;
 var ggLimit = 100;
 var state = 
 {
-    x:300,
-    y:300,
+    x:mapsize/2,
+    y:mapsize/2,
     rotation:0,
     skin:0,
     name:"",
@@ -51,10 +52,10 @@ function makegame()
 function preload() {
     game.load.spritesheet('pl1', '/static/assets/vector_characters.png',100,101,60);
     game.load.image('star', '/static/assets/star.png');
-    game.load.image('floor', '/static/assets/grassBG.jpg');
     game.load.image('dessert', '/static/assets/PNG/tile_06.png');
     game.load.image('grass', '/static/assets/PNG/tile_03.png');
     game.load.image('bullet', '/static/assets/bullet.png');
+    game.load.image('camp1', '/static/assets/camp1.png')
     //ui elements
     game.load.image('barBG', '/static/assets/progressBG.png');
     game.load.image('bar', '/static/assets/progress.png');
@@ -64,17 +65,18 @@ function create() {
     //CREATING FLOOR
     //game.add.sprite(0,0,'floor');
     var j = 0;
-    while(j < 80)
+    while(j < mapsize/64)
     {
         var k = 0;
-        while(k < 80)
+        while(k < mapsize/64)
         {
-            game.add.sprite(30*k,30*j,matrixFloor(k,j));
+            game.add.sprite(64*k,64*j,matrixFloor(k,j));
             k++;
         }
         j++;
     }
-
+    //Creating Points of intrest
+    game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1');
     //creating player
     game.physics.startSystem(Phaser.Physics.ARCADE);
     player = game.add.sprite(state.x, state.y, 'pl1');
@@ -125,7 +127,7 @@ function create() {
 
     //Camera follow
     game.camera.follow(player);
-    game.world.setBounds(0, 0, 1920, 1920);
+    game.world.setBounds(0, 0, mapsize, mapsize);
     //creating objects
 }
 
