@@ -51,7 +51,7 @@ function makegame()
 }
 //Preloads(Sprites)
 function preload() {
-    game.load.spritesheet('pl1', '/static/assets/vector_characters.png',100,101,60);
+    //loading skins
     game.load.image('skin1', '/static/assets/players/hitman1_gun.png');
     game.load.image('skin2', '/static/assets/players/manBlue_gun.png');
     game.load.image('skin3', '/static/assets/players/manBrown_gun.png');
@@ -61,12 +61,14 @@ function preload() {
     game.load.image('skin7', '/static/assets/players/survivor_gun.png');
     game.load.image('skin8', '/static/assets/players/womanGreen_gun.png');
     game.load.image('zSkin', '/static/assets/players/zombie1_hold.png');
-
+    //loading map assets
     game.load.image('dessert', '/static/assets/PNG/tile_06.png');
     game.load.image('grass', '/static/assets/PNG/tile_03.png');
     game.load.image('bullet', '/static/assets/bullet.png');
     game.load.image('camp1', '/static/assets/map/camp1.png')
     game.load.image('camp1Top', '/static/assets/map/camp1Top.png')
+    //loading map objects
+    game.load.image('crate', '/static/assets/objects/crate.png');
     //ui elements
     game.load.image('barBG', '/static/assets/progressBG.png');
     game.load.image('bar', '/static/assets/progress.png');
@@ -108,11 +110,13 @@ function create() {
 
     //creating groups
     stars = game.add.group(); 
+    objects = game.add.physicsGroup();
+    game.physics.enable(objects, Phaser.Physics.ARCADE);
     otext = game.add.group();
     Oplayer = game.add.group();
     game.physics.enable(Oplayer, Phaser.Physics.ARCADE);
     zombies = game.add.group();
-    game.physics.enable(Oplayer, Phaser.Physics.ARCADE);
+    game.physics.enable(zombies, Phaser.Physics.ARCADE);
     bullets = game.add.group();
     game.physics.enable(bullets, Phaser.Physics.ARCADE);
     bullets.enableBody = true;
@@ -198,7 +202,13 @@ function update() {
     collisionChecker();
     nameUpdate();
     uiUpdate();
+    game.physics.arcade.collide(player, objects, boom, null, this);
+
     lastUpdate = game.time.now;
+}
+function boom()
+{
+    console.log('contact');
 }
 function uiUpdate()
 {
@@ -271,6 +281,13 @@ function collisionChecker()
                     }
                 }
             });
+}
+function makeCrate(x,y,rot)
+{
+    var temp = objects.create(x,y,'crate');
+    temp.anchor.setTo(0.5,0.5);  
+    temp.rotation = rot; 
+    temp.body.immovable =  true;
 }
 function matrixFloor(x,y)
 {
