@@ -10,7 +10,7 @@ var crates = [90,510,186,104,496,372,384,564]
 var debug = false;
 var ui = [];
 var objects;
-var leaderboard;
+var leaderboard = "wowow";
 var mapsize = 6500;
 var game;
 var starArray = new Array()
@@ -496,6 +496,10 @@ socket.on('gamestate', function(data) {
             gamestate.splice(i, 1);
         }
     }
+});
+
+socket.on('leaderboard', function(data) {
+    leaderboard = data;
 });
 
 

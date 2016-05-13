@@ -128,6 +128,19 @@ setInterval(function(){
     io.sockets.emit('gamestate', {'players': collect_userstates(), 'zombies': collect_zombiestates()});
 }, 30);
 
+// Continuously send the leaderboard to the clients.
+setInterval(function() {
+    var userstates = collect_userstates();
+    userstates.sort(function(a, b) {
+        return a.score > b.score;
+    });
+    var leaderboard = "";
+    userstates.forEach(function(element) {
+        leaderboard = leaderboard + element.name + ': ' + element.score + '\n';
+    });
+    io.sockets.emit('leaderboard', leaderboard);
+}, 1000)
+
 // The Zombie class
 class Zombie {
 
@@ -197,7 +210,9 @@ setInterval(function() {
     if (!createZombies) {
         return;
     }
-    var zombie = new Zombie();
-    zombies.push(zombie);
+    for (var i=0; i<collect_userstates().length; i++) {
+        var zombie = new Zombie();
+        zombies.push(zombie);
+    }
 }, 60000 / zombies_puser_pmin);
 
