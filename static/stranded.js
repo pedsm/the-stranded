@@ -133,7 +133,7 @@ function create() {
     //creating UI elements
     ui[0] = game.add.text(15, 15, 'Score:0', {align: "left",fontSize: '20px', fill: '#000' });
     ui[0].fixedToCamera = true;
-    ui[1] = game.add.text(document.body.clientWidth - 170,15, 'Leaderboard:',{align:"center",fontSize: '20px', fill:'#000'});
+    ui[1] = game.add.text(document.body.clientWidth - 20,15, 'Leaderboard:',{align:"right",fontSize: '20px', fill:'#000'});
     ui[1].fixedToCamera = true;
     ui[3] = game.add.sprite(15,30, 'bar');
     ui[3].fixedToCamera = true;
@@ -224,7 +224,8 @@ function uiUpdate()
 {
     ui[0].text = "Score:" + state.score;
     ui[1].text = "Leaderboard:\n" + leaderboard;
-    ui[1].x = document.body.clientWidth - 170;
+    ui[1].anchor.setTo(1,0);
+    ui[1].x = document.body.clientWidth - ui[1].width;
     if(game.time.now > nextFire)
     {
         ui[3].width = 80;
