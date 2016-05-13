@@ -258,15 +258,18 @@ function cleanUP()
 }
 function killZombie(bullet, zombie)
 {
-    console.log('hit zombie id: '+zombie.name );
-    bullet.kill();
-    bullet.x = 100000;
-    bullet.y = 100000;
-    zombie.x = 100000;
-    zombie.y = 100000;
-    zombie.isZombie = false;
-    var id = zombie.name;
-    socket.emit('kill', id);
+    if(zombie.isZombie == true)
+    {
+        console.log('hit zombie id: '+zombie.name );
+        bullet.kill();
+        bullet.x = 100000;
+        bullet.y = 100000;
+        zombie.x = 100000;
+        zombie.y = 100000;
+        zombie.isZombie = false;
+        var id = zombie.name;
+        socket.emit('kill', id);
+    }
 }
 function collisionChecker()
 {
@@ -356,6 +359,7 @@ function generateZombie(localID)
         //t.start();
         zombies.children[localID].rotation = zombiestate[localID].rotation;
         zombies.children[localID].name = zombiestate[localID].id;
+        zombies.children[localID].isZombie = zombiestate[localID].isZombie;
         //debug name 
     }else{
         zombies.children.addChild =createZombie(zombiestate[localID].x,zombiestate[localID].y,zombiestate[localID].rotation,zombiestate[localID].id);
@@ -451,6 +455,7 @@ function createZombie(x,y,rot, id)
     temp.name = id;
     temp.loadTexture('zSkin');
     temp.anchor.setTo(0.5,0.5);
+    temp.isZombie = true;
 }
 //creates a new Oplayer
 function createOPlayer(x,y,rot,id,skin)
