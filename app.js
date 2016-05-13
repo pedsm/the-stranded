@@ -132,12 +132,13 @@ setInterval(function(){
 setInterval(function() {
     var userstates = collect_userstates();
     userstates.sort(function(a, b) {
-        return a.score > b.score;
+        return a.score < b.score;
     });
     var leaderboard = "";
-    userstates.forEach(function(element) {
-        leaderboard = leaderboard + element.name + ': ' + element.score + '\n';
-    });
+    var num_players = userstates.length < 5 ? userstates.length : 5;
+    for (var i=0; i<num_players; i++) {
+        leaderboard = leaderboard + userstates[i].name + ': ' + userstates[i].score + '\n';
+    };
     io.sockets.emit('leaderboard', leaderboard);
 }, 1000)
 
