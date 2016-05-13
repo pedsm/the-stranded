@@ -9,6 +9,7 @@ var socket = io();
 var debug = false;
 var ui = [];
 var leaderboard;
+var mapsize = 6500;
 var game;
 var starArray = new Array()
 var stars;
@@ -16,7 +17,9 @@ var velocity = 250;
 var fireRate = 1000;
 var bulletSpeed = 2000;
 var hitBox = 25;
+var poi = [];
 var nextFire = 0;
+var prevUpdate;
 var gamestate = [];
 var zombiestate = [];
 var ztext = [];
@@ -25,8 +28,8 @@ var ggCounter = 0;
 var ggLimit = 100;
 var state = 
 {
-    x:300,
-    y:300,
+    x:mapsize/2,
+    y:mapsize/2,
     rotation:0,
     skin:0,
     name:"",
@@ -34,6 +37,7 @@ var state =
 }
 var player;
 var cursors;
+var lastUpdate;
 function makegame()
 {
     state.name = document.getElementById("name").value;
@@ -48,36 +52,49 @@ function makegame()
 //Preloads(Sprites)
 function preload() {
     game.load.spritesheet('pl1', '/static/assets/vector_characters.png',100,101,60);
-    game.load.image('star', '/static/assets/star.png');
-    game.load.image('floor', '/static/assets/grassBG.jpg');
+    game.load.image('skin1', '/static/assets/players/hitman1_gun.png');
+    game.load.image('skin2', '/static/assets/players/manBlue_gun.png');
+    game.load.image('skin3', '/static/assets/players/manBrown_gun.png');
+    game.load.image('skin4', '/static/assets/players/manOld_gun.png');
+    game.load.image('skin5', '/static/assets/players/robot_gun.png');
+    game.load.image('skin6', '/static/assets/players/soldier_gun.png');
+    game.load.image('skin7', '/static/assets/players/survivor_gun.png');
+    game.load.image('skin8', '/static/assets/players/womanGreen_gun.png');
+    game.load.image('zSkin', '/static/assets/players/zombie1_hold.png');
+
     game.load.image('dessert', '/static/assets/PNG/tile_06.png');
     game.load.image('grass', '/static/assets/PNG/tile_03.png');
     game.load.image('bullet', '/static/assets/bullet.png');
+    game.load.image('camp1', '/static/assets/map/camp1.png')
+    game.load.image('camp1Top', '/static/assets/map/camp1Top.png')
+    //ui elements
+    game.load.image('barBG', '/static/assets/progressBG.png');
+    game.load.image('bar', '/static/assets/progress.png');
 }
 //Creating
 function create() {
     //CREATING FLOOR
-    //game.add.sprite(0,0,'floor');
     var j = 0;
-    while(j < 80)
+    while(j < mapsize/64)
     {
         var k = 0;
-        while(k < 80)
+        while(k < mapsize/64)
         {
-            game.add.sprite(30*k,30*j,matrixFloor(k,j));
+            game.add.sprite(64*k,64*j,matrixFloor(k,j));
             k++;
         }
         j++;
     }
-
+    //Creating Points of intrest
+    poi[0] = game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1');
     //creating player
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    player = game.add.sprite(state.x, state.y, 'pl1');
+    player = game.add.sprite(state.x, state.y, 'skin1');
     game.physics.enable(player,Phaser.Physics.ARCADE);
     player.collideWorldBounds = true;
     
-    costume = Math.floor((Math.random() * 9) + 1);
-    player.frame = (costume * 6) - 1;
+    costume = Math.floor((Math.random() * 8)+1);
+    player.loadTexture('skin' + (costume));
     state.skin = costume;
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -85,6 +102,9 @@ function create() {
     nameText = game.add.text(state.x, state.y, state.name, {align: "center",fontSize: '20px', fill: '#000' });
     nameText.anchor.x = 0;
     nameText.x = nameText.x + nameText.width/2
+    
+    //Create top Points of interest
+    poi[1] = game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1Top');
 
     //creating groups
     stars = game.add.group(); 
@@ -105,6 +125,13 @@ function create() {
     ui[0].fixedToCamera = true;
     ui[1] = game.add.text(document.body.clientWidth - 170,15, 'Leaderboard:',{align:"center",fontSize: '20px', fill:'#000'});
     ui[1].fixedToCamera = true;
+    ui[3] = game.add.sprite(15,30, 'bar');
+    ui[3].fixedToCamera = true;
+    ui[3].width = 80;
+    ui[2] = game.add.sprite(15,30,'barBG');
+    ui[2].fixedToCamera = true;
+    ui[2].width = 80;
+    
     //adding WASD support
     this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -113,7 +140,7 @@ function create() {
 
     //Camera follow
     game.camera.follow(player);
-    game.world.setBounds(0, 0, 1920, 1920);
+    game.world.setBounds(0, 0, mapsize, mapsize);
     //creating objects
 }
 
@@ -124,29 +151,28 @@ function update() {
     state.x = player.x;
     state.y = player.y;
     state.rotation = player.rotation;
-
     playerCollision();
     rotatePlayer();
+    var delta = game.time.now - lastUpdate; 
     if (this.leftKey.isDown || cursors.left.isDown)
     {
-        //  Move to the left
-        player.body.velocity.x = -velocity;
-        player.animations.play('left');
+        //player.body.velocity.x = -velocity;
+        player.body.x -= velocity * delta/1000;
     }
     if (this.rightKey.isDown|| cursors.right.isDown)
     {
-        //  Move to the right
-        player.body.velocity.x = velocity;
-
-        player.animations.play('right');
+        //player.body.velocity.x = velocity;
+        player.body.x += velocity * delta/1000;
     }
     if (this.upKey.isDown || cursors.up.isDown)
     {
-        player.body.velocity.y = -velocity;
+        //player.body.velocity.y = -velocity;
+        player.body.y -= velocity * delta/1000;
     }
     if (this.downKey.isDown || cursors.down.isDown)
     {
-        player.body.velocity.y = velocity;
+        //player.body.velocity.y = velocity;
+        player.body.y += velocity * delta/1000;
     }
     if (game.input.activePointer.isDown)
     {
@@ -172,11 +198,21 @@ function update() {
     collisionChecker();
     nameUpdate();
     uiUpdate();
+    lastUpdate = game.time.now;
 }
 function uiUpdate()
 {
     ui[0].text = "Score:" + state.score;
-    ui[1].text = "Leaderboard:" + leaderboard;
+    ui[1].text = "Leaderboard:\n" + leaderboard;
+    ui[1].x = document.body.clientWidth - 170;
+    if(game.time.now > nextFire)
+    {
+        ui[3].width = 80;
+    }else{
+        ui[3].width = 80 - ((nextFire - game.time.now)/fireRate * 80);
+    }
+    game.scale.setGameSize(document.body.clientWidth,document.body.clientHeight);
+
 }
 function nameUpdate()
 {
@@ -375,13 +411,13 @@ function createZombie(x,y,rot, id)
     var temp = zombies.create(x,y,'pl1');
     temp.rotation = rot;
     temp.name = id;
-    temp.frame = 25;
+    temp.loadTexture('zSkin');
     temp.anchor.setTo(0.5,0.5);
 }
 //creates a new Oplayer
 function createOPlayer(x,y,rot,id,skin)
 {
-    var temp = Oplayer.create(x,y,'pl1');
+    var temp = Oplayer.create(x,y,'skin1');
     temp.rotation = rot;
     temp.name = id;
     temp.anchor.setTo(0.5,0.5);
@@ -390,7 +426,7 @@ function createOPlayer(x,y,rot,id,skin)
         temp.frame = 25;
     }else
     {
-    temp.frame = (skin*6)-1;
+        temp.loadTexture('skin' + (skin));
     }   
     return temp;
 }
