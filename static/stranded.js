@@ -258,15 +258,18 @@ function cleanUP()
 }
 function killZombie(bullet, zombie)
 {
-    console.log('hit zombie id: '+zombie.name );
-    bullet.kill();
-    bullet.x = 100000;
-    bullet.y = 100000;
-    zombie.x = 100000;
-    zombie.y = 100000;
-    zombie.isZombie = false;
-    var id = zombie.name;
-    socket.emit('kill', id);
+    if(zombie.isZombie == true)
+    {
+        console.log('hit zombie id: '+zombie.name );
+        bullet.kill();
+        bullet.x = 100000;
+        bullet.y = 100000;
+        zombie.x = 100000;
+        zombie.y = 100000;
+        zombie.isZombie = false;
+        var id = zombie.name;
+        socket.emit('kill', id);
+    }
 }
 function collisionChecker()
 {
@@ -451,6 +454,7 @@ function createZombie(x,y,rot, id)
     temp.name = id;
     temp.loadTexture('zSkin');
     temp.anchor.setTo(0.5,0.5);
+    temp.isZombie = true;
 }
 //creates a new Oplayer
 function createOPlayer(x,y,rot,id,skin)
