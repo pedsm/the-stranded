@@ -12,7 +12,7 @@ var gameport        = process.env.PORT || 4004,
     verbose         = false,
     update_delta    = 30, //ms
     list_of_zombies = [],
-    zombies_puser_pmin = 10,
+    zombies_puser_pmin = 12,
     zombie_velocity = 70,
     zombies = [],
     createZombies = true;
@@ -147,8 +147,8 @@ class Zombie {
 
     constructor() {
         this.id = ids_given++;
-        this.x = Math.floor(Math.random() * 1920);
-        this.y = Math.floor(Math.random() * 1920);
+        this.x = Math.floor(Math.random() * 6500);
+        this.y = Math.floor(Math.random() * 6500);
         this.rotation = 0;
         this.isZombie = true;
 
