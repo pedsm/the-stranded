@@ -54,6 +54,7 @@ function collect_userstates() {
         if (socket.state) {
             state.isZombie = false;
             state.id = socket.userid;
+            state.score = socket.score;
             states.push(state);
         }
     })
@@ -83,6 +84,7 @@ var ids_given = 0;
 // Once a client has connected...
 io.on('connection', function(socket) {
     socket.userid = ids_given++;
+    socket.score = 0;
 
     // Assign them a unique ID.
     socket.emit( 'userid', { id: socket.userid } );
@@ -112,6 +114,7 @@ io.on('connection', function(socket) {
             if (zombies[i].id == parseInt(data)) {
                 zombies.splice(i, 1);
                 console.log('Player ' + socket.userid + ' killed a zombie.');
+                socket.score += 1;
             }
         }
     });
