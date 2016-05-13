@@ -54,14 +54,14 @@ function makegame()
 //Preloads(Sprites)
 function preload() {
     //loading skins
-    game.load.image('skin1', '/static/assets/players/hitman1_gun.png');
-    game.load.image('skin2', '/static/assets/players/manBlue_gun.png');
-    game.load.image('skin3', '/static/assets/players/manBrown_gun.png');
-    game.load.image('skin4', '/static/assets/players/manOld_gun.png');
-    game.load.image('skin5', '/static/assets/players/robot_gun.png');
-    game.load.image('skin6', '/static/assets/players/soldier_gun.png');
-    game.load.image('skin7', '/static/assets/players/survivor_gun.png');
-    game.load.image('skin8', '/static/assets/players/womanGreen_gun.png');
+    game.load.image('skin0', '/static/assets/players/hitman1_gun.png');
+    game.load.image('skin1', '/static/assets/players/manBlue_gun.png');
+    game.load.image('skin2', '/static/assets/players/manBrown_gun.png');
+    game.load.image('skin3', '/static/assets/players/manOld_gun.png');
+    game.load.image('skin4', '/static/assets/players/robot_gun.png');
+    game.load.image('skin5', '/static/assets/players/soldier_gun.png');
+    game.load.image('skin6', '/static/assets/players/survivor_gun.png');
+    game.load.image('skin7', '/static/assets/players/womanGreen_gun.png');
     game.load.image('zSkin', '/static/assets/players/zombie1_hold.png');
     //loading map assets
     game.load.image('dessert', '/static/assets/PNG/tile_06.png');
@@ -433,7 +433,7 @@ function rotatePlayer()
 }
 function createZombie(x,y,rot, id)
 {
-    var temp = zombies.create(x,y,'pl1');
+    var temp = zombies.create(x,y,'zSkin');
     temp.rotation = rot;
     temp.name = id;
     temp.loadTexture('zSkin');
