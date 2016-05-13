@@ -147,8 +147,8 @@ class Zombie {
 
     constructor() {
         this.id = ids_given++;
-        this.x = Math.floor(Math.random() * 1920);
-        this.y = Math.floor(Math.random() * 1920);
+        this.x = Math.floor(Math.random() * 6500);
+        this.y = Math.floor(Math.random() * 6500);
         this.rotation = 0;
         this.isZombie = true;
 
