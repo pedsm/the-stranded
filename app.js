@@ -197,7 +197,9 @@ setInterval(function() {
     if (!createZombies) {
         return;
     }
-    var zombie = new Zombie();
-    zombies.push(zombie);
+    for (var i=0; i<collect_userstates().length; i++) {
+        var zombie = new Zombie();
+        zombies.push(zombie);
+    }
 }, 60000 / zombies_puser_pmin);
 
