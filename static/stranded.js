@@ -1,13 +1,15 @@
 //
-// The Stranded - A zombie game...
-//
 
 // Connect to server
 var socket = io();
 
 //Variable declarations
+//map objects
+var crates = [90,510,186,104,496,372,384,564]
+
 var debug = false;
 var ui = [];
+var objects;
 var leaderboard;
 var mapsize = 6500;
 var game;
@@ -105,15 +107,12 @@ function create() {
     nameText.anchor.x = 0;
     nameText.x = nameText.x + nameText.width/2
     
-    //Create top Points of interest
-    poi[1] = game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1Top');
-
     //creating groups
     stars = game.add.group(); 
     objects = game.add.physicsGroup();
     game.physics.enable(objects, Phaser.Physics.ARCADE);
     otext = game.add.group();
-    Oplayer = game.add.group();
+    Oplayer = game.add.physicsGroup();
     game.physics.enable(Oplayer, Phaser.Physics.ARCADE);
     zombies = game.add.group();
     game.physics.enable(zombies, Phaser.Physics.ARCADE);
@@ -123,6 +122,13 @@ function create() {
     bullets.createMultiple(50, 'bullet');
     bullets.setAll('checkWorldBounds', true);
     bullets.setAll('outOfBoundsKill', true);
+
+    //Create top Points of interest
+    poi[1] = game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1Top');
+    for(i=0; i < 8; i += 2)
+    {
+        makeCrate(mapsize/2-300 + crates[i],mapsize/2-300 + crates[i+1]);
+    }
 
     //creating UI elements
     ui[0] = game.add.text(15, 15, 'Score:0', {align: "left",fontSize: '20px', fill: '#000' });
@@ -145,7 +151,8 @@ function create() {
     //Camera follow
     game.camera.follow(player);
     game.world.setBounds(0, 0, mapsize, mapsize);
-    //creating objects
+    //z fixes
+    nameText.bringToTop();
 }
 
 function update() {
@@ -203,6 +210,7 @@ function update() {
     nameUpdate();
     uiUpdate();
     game.physics.arcade.collide(player, objects, boom, null, this);
+    game.physics.arcade.collide(player, Oplayer, boom, null, this);
 
     lastUpdate = game.time.now;
 }
