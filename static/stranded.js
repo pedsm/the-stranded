@@ -10,6 +10,8 @@ var crates = [90,510,186,104,496,372,384,564]
 var debug = false;
 var ui = [];
 var objects;
+var powerUP;
+var bulletsLeft = 0;
 var leaderboard = "wowow";
 var mapsize = 6500;
 var game;
@@ -63,14 +65,24 @@ function preload() {
     game.load.image('skin6', '/static/assets/players/survivor_gun.png');
     game.load.image('skin7', '/static/assets/players/womanGreen_gun.png');
     game.load.image('zSkin', '/static/assets/players/zombie1_hold.png');
-    //loading map assets
+
+    game.load.image('skin01', '/static/assets/players/hitman1_machine.png');
+    game.load.image('skin11', '/static/assets/players/manBlue_machine.png');
+    game.load.image('skin21', '/static/assets/players/manBrown_machine.png');
+    game.load.image('skin31', '/static/assets/players/manOld_machine.png');
+    game.load.image('skin41', '/static/assets/players/robot_machine.png');
+    game.load.image('skin51', '/static/assets/players/soldier_machine.png');
+    game.load.image('skin61', '/static/assets/players/survivor_machine.png');
+    game.load.image('skin71', '/static/assets/players/womanGreen_machine.png');
+    //loading map asset
     game.load.image('dessert', '/static/assets/PNG/tile_06.png');
     game.load.image('grass', '/static/assets/PNG/tile_03.png');
     game.load.image('bullet', '/static/assets/bullet.png');
-    game.load.image('camp1', '/static/assets/map/camp1.png')
+    game.load.image('camp1', '/static/assets/map/camp1.png');
     game.load.image('camp1Top', '/static/assets/map/camp1Top.png')
     //loading map objects
     game.load.image('crate', '/static/assets/objects/crate.png');
+    game.load.image('powerUP1', 'static/assets/objects/machineGun.png');
     //ui elements
     game.load.image('barBG', '/static/assets/progressBG.png');
     game.load.image('bar', '/static/assets/progress.png');
@@ -98,8 +110,8 @@ function create() {
     player.collideWorldBounds = true;
     
     costume = Math.floor((Math.random() * 7)+1);
-    player.loadTexture('skin' + (costume));
-    state.skin = costume;
+    state.skin = 'skin' + costume;
+    player.loadTexture(state.skin);
 
     cursors = game.input.keyboard.createCursorKeys();
     player.anchor.setTo(0.5,0.5);
@@ -122,6 +134,8 @@ function create() {
     bullets.createMultiple(50, 'bullet');
     bullets.setAll('checkWorldBounds', true);
     bullets.setAll('outOfBoundsKill', true);
+    powerUP = game.add.physicsGroup();
+    game.physics.enable(powerUP, Phaser.Physics.ARCADE);
 
     //Create top Points of interest
     poi[1] = game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1Top');
@@ -141,6 +155,8 @@ function create() {
     ui[2] = game.add.sprite(15,30,'barBG');
     ui[2].fixedToCamera = true;
     ui[2].width = 80;
+    ui[4] = game.add.text(15,document.body.clientHeight -30, '', {align:"left",fontSize:'20px',fill:'#000'});
+    ui[4].fixedToCamera = true;
     
     //adding WASD support
     this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -211,10 +227,20 @@ function update() {
     uiUpdate();
     game.physics.arcade.collide(player, objects, boom, null, this);
     game.physics.arcade.collide(player, Oplayer, boom, null, this);
+    game.physics.arcade.overlap(player, powerUP, upgrade, null, this);
     game.physics.arcade.collide(zombies, objects, boom, null, this);
     game.physics.arcade.overlap(bullets, zombies, killZombie, null, this);
     
     lastUpdate = game.time.now;
+}
+function upgrade(player, powerUP)
+{
+    console.log('Upgraded gun');
+    powerUP.kill();
+    state.skin = 'skin' + costume + '1';
+    player.loadTexture(state.skin);
+    fireRate = 300;
+    bulletsLeft = 48;
 }
 function boom()
 {
@@ -231,6 +257,15 @@ function uiUpdate()
         ui[3].width = 80;
     }else{
         ui[3].width = 80 - ((nextFire - game.time.now)/fireRate * 80);
+    }
+    if(bulletsLeft > 0)
+    {
+        ui[4].text = "Ammo:"+ bulletsLeft ;
+    }else{
+        ui[4].text = "";
+        state.skin = 'skin' + costume;
+        player.loadTexture(state.skin);
+        fireRate=1000;
     }
     game.scale.setGameSize(document.body.clientWidth,document.body.clientHeight);
 
@@ -274,27 +309,6 @@ function killZombie(bullet, zombie)
 }
 function collisionChecker()
 {
-    /*bullets.forEach(function(item){
-        zombies.forEach(function(item2)
-            {
-                //console.log(item.x);
-                if(item.x > item2.x - hitBox && item.x < item2.x + hitBox)
-                {
-                   if(item.y > item2.y-hitBox && item.y < item2.y+hitBox)
-                   {
-                       console.log('hit zombie id: '+item2.name );
-                       item.kill();
-                       item.x = 100000;
-                       item.y = 100000;
-                       item2.x = 100000;
-                       item2.y = 100000;
-                       item2.isZombie = false;
-                       var id = item2.name;
-                       socket.emit('kill', id);
-                   } 
-                }
-            })
-    });*/
     zombies.forEach(function(item3)
             {
                 if(item3.x > player.x - hitBox && item3.x < player.x + hitBox)
@@ -307,6 +321,15 @@ function collisionChecker()
                     }
                 }
             });
+}
+function makePowerUP(powerID,x,y)
+{
+    if(powerID == 1)
+    {
+        var temp = powerUP.create(x,y, 'powerUP1');
+        temp.anchor.setTo(0.5,0.5);
+        temp.body.immovable = true;
+    }
 }
 function makeCrate(x,y,rot)
 {
@@ -386,7 +409,7 @@ function generate(localID)
         //t.to({x:gamestate[localID.x], y:gamestate[localID.y]},100);
         //t.start();
         Oplayer.children[localID].rotation = gamestate[localID].rotation;
-        Oplayer.children[localID].frame = (gamestate[localID].skin * 6)-1; 
+        Oplayer.children[localID].loadTexture(gamestate[localID].skin) ;
         Oplayer.children[localID].name = gamestate[localID].id;
         //make name for oplayer
         otext.children[localID].reset();
@@ -417,6 +440,7 @@ function fire()
         var bullet = bullets.getFirstDead();
         bullet.reset(player.x - 8, player.y - 8);
         game.physics.arcade.moveToPointer(bullet, bulletSpeed); 
+        bulletsLeft--;
     }   
 }
 
