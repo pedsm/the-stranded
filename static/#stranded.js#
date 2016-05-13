@@ -97,7 +97,7 @@ function create() {
     game.physics.enable(player,Phaser.Physics.ARCADE);
     player.collideWorldBounds = true;
     
-    costume = Math.floor((Math.random() * 7)+1);
+    costume = Math.floor((Math.random() * 8)+1);
     player.loadTexture('skin' + (costume));
     state.skin = costume;
 
@@ -114,9 +114,9 @@ function create() {
     otext = game.add.group();
     Oplayer = game.add.physicsGroup();
     game.physics.enable(Oplayer, Phaser.Physics.ARCADE);
-    zombies = game.add.physicsGroup();
+    zombies = game.add.group();
     game.physics.enable(zombies, Phaser.Physics.ARCADE);
-    bullets = game.add.physicsGroup();
+    bullets = game.add.group();
     game.physics.enable(bullets, Phaser.Physics.ARCADE);
     bullets.enableBody = true;
     bullets.createMultiple(50, 'bullet');
@@ -211,9 +211,7 @@ function update() {
     uiUpdate();
     game.physics.arcade.collide(player, objects, boom, null, this);
     game.physics.arcade.collide(player, Oplayer, boom, null, this);
-    game.physics.arcade.collide(zombies, objects, boom, null, this);
-    game.physics.arcade.overlap(bullets, zombies, killZombie, null, this);
-    
+
     lastUpdate = game.time.now;
 }
 function boom()
@@ -258,7 +256,7 @@ function cleanUP()
 }
 function killZombie(bullet, zombie)
 {
-    console.log('hit zombie id: '+zombie.name );
+    console.log('hit zombie id: '+item2.name );
     bullet.kill();
     bullet.x = 100000;
     bullet.y = 100000;
@@ -349,6 +347,7 @@ function generateZombie(localID)
 {
     if(zombieExists(localID))
     {
+        zombies.children[localID].reset();
         zombies.children[localID].x = zombiestate[localID].x;
         zombies.children[localID].y = zombiestate[localID].y;
         //t = game.add.tween(zombies.children[localID]);
