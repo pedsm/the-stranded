@@ -466,6 +466,7 @@ socket.on('gamestate', function(data) {
     zombiestate = data.zombies;
     for (var i = 0; i<gamestate.length; i++) {
         if (gamestate[i].id == user_id) {
+            state.score = gamestate[i].score;
             gamestate.splice(i, 1);
         }
     }
