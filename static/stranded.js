@@ -383,8 +383,6 @@ function generateZombie(localID)
         //t.start();
         zombies.children[localID].rotation = zombiestate[localID].rotation;
         zombies.children[localID].name = zombiestate[localID].id;
-        zombies.children[localID].isZombie = zombiestate[localID].isZombie;
-        //debug name 
     }else{
         zombies.children.addChild =createZombie(zombiestate[localID].x,zombiestate[localID].y,zombiestate[localID].rotation,zombiestate[localID].id);
     }
