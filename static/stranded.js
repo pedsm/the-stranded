@@ -20,6 +20,12 @@ var stars;
 var velocity = 250;
 var fireRate = 1000;
 var bulletSpeed = 2000;
+var bulletO =
+{
+    x:3500,
+    y:3500
+}
+var bulletArray = [bulletO];
 var hitBox = 25;
 var poi = [];
 var nextFire = 0;
@@ -121,6 +127,7 @@ function create() {
     
     //creating groups
     stars = game.add.group(); 
+    bulletG = game.add.group();
     objects = game.add.physicsGroup();
     game.physics.enable(objects, Phaser.Physics.ARCADE);
     otext = game.add.group();
@@ -216,6 +223,11 @@ function update() {
     {
         generateZombie(i);
     }
+    //generate local instances of all bullets 
+    for(i=0; i <  bulletArray.length; i++)
+    {
+        generateBullet(i);
+    }
     //cleanUP to sync local registers
     if(gamestate.length < Oplayer.children.length || zombiestate.length < zombies.children.length)
     {
@@ -305,6 +317,7 @@ function killZombie(bullet, zombie)
         zombie.isZombie = false;
         var id = zombie.name;
         socket.emit('kill', id);
+        zombie.name = 100000;
     }
 }
 function collisionChecker()
@@ -376,13 +389,17 @@ function generateZombie(localID)
 {
     if(zombieExists(localID))
     {
-        zombies.children[localID].x = zombiestate[localID].x;
-        zombies.children[localID].y = zombiestate[localID].y;
-        //t = game.add.tween(zombies.children[localID]);
-        //t.to({x:zombiestate[localID.x], y:zombiestate[localID.y]}, 100);
-        //t.start();
-        zombies.children[localID].rotation = zombiestate[localID].rotation;
-        zombies.children[localID].name = zombiestate[localID].id;
+        if(zombies.children[localID].name != 100000)
+        {
+            zombies.children[localID].x = zombiestate[localID].x;
+            zombies.children[localID].y = zombiestate[localID].y;
+            zombies.children[localID].rotation = zombiestate[localID].rotation;
+            zombies.children[localID].name = zombiestate[localID].id;
+            zombies.children[localID].isZombie = zombiestate[localID].isZombie;
+        }else{
+            zombies.children[localID].x = -100;
+            zombies.children[localID].y = -100;
+        }
     }else{
         zombies.children.addChild =createZombie(zombiestate[localID].x,zombiestate[localID].y,zombiestate[localID].rotation,zombiestate[localID].id);
     }
@@ -418,6 +435,30 @@ function generate(localID)
     }else{
         Oplayer.children[localID] =  createOPlayer(gamestate[localID].x,gamestate[localID].y,gamestate[localID].rotation,gamestate[localID].id,gamestate[localID].skin);
         game.add.text(gamestate[localID].x, gamestate[localID].y, gamestate[localID].name, {align: "center",fontSize: '15px', fill: '#000' }, otext);
+    }
+}
+function generateBullet(localID)
+{
+    if(bulletExists(localID)) 
+    {
+       bulletG.children[localID].x = bulletArray[localID].x; 
+       bulletG.children[localID].y = bulletArray[localID].y; 
+    }else{
+       bulletG.children[localID] = createBullet(bulletArray[localID].x, bulletArray[localID].y);
+    }
+}
+function createBullet(x, y)
+{
+    var temp = bulletG.create(x,y, 'bullet');
+    return temp;
+}
+function bulletExists(localID)
+{
+    if(bulletG.children.length > localID)
+    {
+        return true;
+    }else{
+        return false;
     }
 }
 function opExists(localID)
