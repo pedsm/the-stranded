@@ -86,6 +86,8 @@ function preload() {
     game.load.image('bullet', '/static/assets/bullet.png');
     game.load.image('camp1', '/static/assets/map/camp1.png');
     game.load.image('camp1Top', '/static/assets/map/camp1Top.png')
+    game.load.image('camp2', '/static/assets/map/camp2.png');
+    game.load.image('camp2Top', '/static/assets/map/camp2Top.png')
     //loading map objects
     game.load.image('crate', '/static/assets/objects/crate.png');
     game.load.image('powerUP1', 'static/assets/objects/machineGun.png');
@@ -109,6 +111,7 @@ function create() {
     }
     //Creating Points of intrest
     poi[0] = game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1');
+    poi[2] = game.add.sprite(5504,1024, 'camp2');
     //creating player
     game.physics.startSystem(Phaser.Physics.ARCADE);
     player = game.add.sprite(state.x, state.y, 'skin1');
@@ -146,6 +149,7 @@ function create() {
 
     //Create top Points of interest
     poi[1] = game.add.sprite(mapsize/2-300,mapsize/2-300, 'camp1Top');
+    poi[3] = game.add.sprite(5504,1024, 'camp2Top');
     for(i=0; i < 8; i += 2)
     {
         makeCrate(mapsize/2-300 + crates[i],mapsize/2-300 + crates[i+1]);
